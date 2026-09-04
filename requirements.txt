@@ -1,0 +1,10 @@
+Django>=5.0
+djangorestframework>=3.15
+python-decouple>=3.8
+
+# فازهای بعدی (فعلاً غیرفعال؛ هر زمان لازم شد کامنت را بردار):
+# psycopg2-binary   # اتصال PostgreSQL
+# redis
+# celery
+# qrcode[pil]        # تولید QR Code
+Pillow>=10.0          # لازم برای ImageField (لوگو/تصویر رستوران، محصولات)
