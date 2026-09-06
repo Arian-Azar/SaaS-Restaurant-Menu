@@ -22,9 +22,9 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # بخش‌های بعدی فاز ۱ این خط‌ها را فعال می‌کنند:
-    # path('accounts/', include('apps.accounts.urls')),
-    # path('', include('apps.restaurants.urls')),
+    path('accounts/', include('apps.accounts.urls')),
+    path('panel/', include('apps.menu.urls', namespace='menu')),
+    path('', include('apps.restaurants.urls')),
 ]
 
 # در محیط توسعه، فایل‌های media (تصاویر آپلودشده) مستقیماً توسط Django سرو می‌شوند.
