@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}پلتفرم منوی دیجیتال{% endblock %}</title>
+    {% block meta %}{% endblock %}
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f4f5f7;
+            margin: 0;
+            color: #222;
+        }
+        header {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header a { color: #fff; text-decoration: none; }
+        .container {
+            max-width: 480px;
+            margin: 48px auto;
+            background: #fff;
+            padding: 32px;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+        .wide-container {
+            max-width: 720px;
+            margin: 32px auto;
+            background: #fff;
+            padding: 32px;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+        h1 { font-size: 20px; margin-top: 0; }
+        label { display: block; margin: 14px 0 6px; font-size: 14px; }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        button, .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .errorlist { color: #dc2626; font-size: 13px; list-style: none; padding: 0; margin: 4px 0; }
+        .muted { color: #6b7280; font-size: 13px; }
+        .stat-box {
+            display: inline-block;
+            padding: 16px 24px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            margin-left: 12px;
+        }
+        .stat-box strong { display: block; font-size: 22px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { text-align: right; padding: 10px 8px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
+        th { color: #6b7280; font-weight: 600; }
+        .actions a { margin-left: 10px; font-size: 13px; }
+        .actions .delete-link { color: #dc2626; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+        .badge-active { background: #dcfce7; color: #166534; }
+        .badge-inactive { background: #fee2e2; color: #991b1b; }
+        textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <a href="{% url 'dashboard' %}">پلتفرم منوی دیجیتال</a>
+            {% if user.is_authenticated %}
+                &nbsp;|&nbsp;
+                <a href="{% url 'menu:category_list' %}">دسته‌بندی‌ها</a>
+                &nbsp;|&nbsp;
+                <a href="{% url 'menu:product_list' %}">محصولات</a>
+            {% endif %}
+        </div>
+        <div>
+            {% if user.is_authenticated %}
+                <span class="muted" style="color:#d1d5db;">{{ user.username }}</span>
+                &nbsp;|&nbsp;
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none;border:none;color:#fff;text-decoration:underline;cursor:pointer;padding:0;margin:0;font-size:14px;">خروج</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">ورود</a>
+                &nbsp;|&nbsp;
+                <a href="{% url 'register' %}">ثبت‌نام رستوران</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div style="max-width:720px;margin:16px auto 0;">
+        {% for message in messages %}
+            <div style="background:#ecfdf5;border:1px solid #10b981;color:#065f46;padding:10px 16px;border-radius:6px;margin-bottom:8px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+
+    {% block content %}{% endblock %}
+</body>
+</html>

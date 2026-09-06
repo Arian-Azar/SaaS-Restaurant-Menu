@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}داشبورد {{ restaurant.name }}{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <h1>خوش آمدید، {{ restaurant.name }} 👋</h1>
+    <p class="muted">
+        این یک نسخه‌ی خیلی اولیه از پنل مدیریت است (فقط برای تست بخش ۴).
+        نسخه‌ی کامل با مدیریت دسته‌بندی و محصولات در بخش ۵ ساخته می‌شود.
+    </p>
+
+    <div>
+        <div class="stat-box">
+            <strong>{{ category_count }}</strong>
+            دسته‌بندی
+        </div>
+        <div class="stat-box">
+            <strong>{{ product_count }}</strong>
+            محصول
+        </div>
+    </div>
+
+    <p class="muted" style="margin-top:32px;">
+        لینک عمومی منوی شما:
+        <a href="{{ public_menu_url }}" target="_blank">{{ public_menu_url }}</a>
+    </p>
+
+    <div style="margin-top:20px;display:flex;align-items:center;gap:20px;">
+        <img src="{% url 'qr_code' %}" alt="QR Code منوی رستوران" width="140" height="140" style="border:1px solid #e5e7eb;border-radius:8px;">
+        <div>
+            <p class="muted" style="margin:0 0 10px;">این QR Code را روی میز، بسته‌بندی یا کارت ویزیت چاپ کنید.</p>
+            <a class="btn" href="{% url 'qr_code' %}?download=1">دانلود QR Code</a>
+        </div>
+    </div>
+
+    <p style="margin-top:24px;">
+        <a class="btn" href="{% url 'menu:category_list' %}">مدیریت دسته‌بندی‌ها</a>
+        <a class="btn" style="background:#374151;" href="{% url 'menu:product_list' %}">مدیریت محصولات</a>
+    </p>
+</div>
+{% endblock %}

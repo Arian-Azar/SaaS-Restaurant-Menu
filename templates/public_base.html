@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}منوی دیجیتال{% endblock %}</title>
+    {% block meta %}{% endblock %}
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f9fafb;
+            margin: 0;
+            color: #1f2937;
+        }
+        .menu-wrapper { max-width: 640px; margin: 0 auto; padding-bottom: 40px; }
+        .cover {
+            height: 160px;
+            background: #111827 center/cover no-repeat;
+            display: flex;
+            align-items: flex-end;
+        }
+        .restaurant-header {
+            padding: 16px 20px 20px;
+            background: #fff;
+            border-radius: 16px 16px 0 0;
+            margin-top: -20px;
+            position: relative;
+        }
+        .restaurant-header h1 { margin: 0 0 4px; font-size: 22px; }
+        .restaurant-header .meta { color: #6b7280; font-size: 13px; }
+        .category-block { padding: 20px; }
+        .category-title {
+            font-size: 17px;
+            font-weight: 700;
+            border-right: 4px solid #2563eb;
+            padding-right: 10px;
+            margin-bottom: 12px;
+        }
+        .product-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .product-card:last-child { border-bottom: none; }
+        .product-name { font-weight: 600; font-size: 15px; }
+        .product-desc { color: #6b7280; font-size: 13px; margin-top: 2px; }
+        .product-price { white-space: nowrap; font-weight: 700; font-size: 14px; }
+        .product-price .original { color: #9ca3af; text-decoration: line-through; font-weight: 400; font-size: 12px; margin-left: 6px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #6b7280; }
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+        footer a { color: #6b7280; }
+    </style>
+</head>
+<body>
+    {% block content %}{% endblock %}
+
+    <footer>
+        ساخته‌شده با پلتفرم منوی دیجیتال
+    </footer>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}محصولات{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <div class="top-bar">
+        <h1>محصولات منو</h1>
+        <a class="btn" href="{% url 'menu:product_add' %}">+ محصول جدید</a>
+    </div>
+
+    {% if products %}
+    <table>
+        <thead>
+            <tr>
+                <th>نام</th>
+                <th>دسته‌بندی</th>
+                <th>قیمت</th>
+                <th>قیمت نهایی</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category.name }}</td>
+                <td>{{ product.price }} تومان</td>
+                <td>{{ product.final_price }} تومان</td>
+                <td>
+                    {% if product.is_available %}
+                        <span class="badge badge-active">موجود</span>
+                    {% else %}
+                        <span class="badge badge-inactive">ناموجود</span>
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{% url 'menu:product_edit' product.pk %}">ویرایش</a>
+                    <a class="delete-link" href="{% url 'menu:product_delete' product.pk %}">حذف</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="muted">
+        هنوز محصولی ثبت نکرده‌اید. اگر دسته‌بندی هم ندارید، ابتدا یک
+        <a href="{% url 'menu:category_add' %}">دسته‌بندی جدید</a> بسازید.
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

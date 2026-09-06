@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}دسته‌بندی‌ها{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <div class="top-bar">
+        <h1>دسته‌بندی‌های منو</h1>
+        <a class="btn" href="{% url 'menu:category_add' %}">+ دسته‌بندی جدید</a>
+    </div>
+
+    {% if categories %}
+    <table>
+        <thead>
+            <tr>
+                <th>نام</th>
+                <th>ترتیب</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.name }}</td>
+                <td>{{ category.sort_order }}</td>
+                <td>
+                    {% if category.is_active %}
+                        <span class="badge badge-active">فعال</span>
+                    {% else %}
+                        <span class="badge badge-inactive">غیرفعال</span>
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{% url 'menu:category_edit' category.pk %}">ویرایش</a>
+                    <a class="delete-link" href="{% url 'menu:category_delete' category.pk %}">حذف</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="muted">هنوز دسته‌بندی‌ای ثبت نکرده‌اید.</p>
+    {% endif %}
+</div>
+{% endblock %}

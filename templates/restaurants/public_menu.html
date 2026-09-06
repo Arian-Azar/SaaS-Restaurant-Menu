@@ -1,0 +1,54 @@
+{% extends 'public_base.html' %}
+
+{% block title %}منوی {{ restaurant.name }}{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="منوی آنلاین {{ restaurant.name }}{% if restaurant.address %} - {{ restaurant.address }}{% endif %}">
+    <meta property="og:title" content="منوی {{ restaurant.name }}">
+    <meta property="og:description" content="{{ restaurant.description|truncatewords:20 }}">
+    {% if restaurant.cover_image %}
+        <meta property="og:image" content="{{ restaurant.cover_image.url }}">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="menu-wrapper">
+    <div class="cover" style="{% if restaurant.cover_image %}background-image:url('{{ restaurant.cover_image.url }}');{% endif %}"></div>
+
+    <div class="restaurant-header">
+        <h1>{{ restaurant.name }}</h1>
+        {% if restaurant.description %}<p class="meta">{{ restaurant.description }}</p>{% endif %}
+        {% if restaurant.address %}<p class="meta">📍 {{ restaurant.address }}</p>{% endif %}
+        {% if restaurant.phone %}<p class="meta">📞 {{ restaurant.phone }}</p>{% endif %}
+    </div>
+
+    {% if categories %}
+        {% for category in categories %}
+            {% if category.products.all %}
+            <div class="category-block">
+                <div class="category-title">{{ category.name }}</div>
+                {% for product in category.products.all %}
+                <div class="product-card">
+                    <div>
+                        <div class="product-name">{{ product.name }}</div>
+                        {% if product.description %}
+                            <div class="product-desc">{{ product.description }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-price">
+                        {% if product.discount_price %}
+                            <span class="original">{{ product.price }}</span>{{ product.discount_price }} تومان
+                        {% else %}
+                            {{ product.price }} تومان
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">منوی این رستوران هنوز آماده نشده است.</div>
+    {% endif %}
+</div>
+{% endblock %}

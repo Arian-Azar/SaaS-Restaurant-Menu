@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}ثبت‌نام رستوران{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>ثبت‌نام رستوران جدید</h1>
+    <p class="muted">با ثبت‌نام، حساب کاربری و رستوران شما همزمان ساخته می‌شود.</p>
+
+    {% if form.non_field_errors %}
+        <ul class="errorlist">
+            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <ul class="errorlist">
+                    {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+        <button type="submit">ثبت‌نام</button>
+    </form>
+
+    <p class="muted" style="margin-top:20px;">
+        قبلاً ثبت‌نام کرده‌اید؟ <a href="{% url 'login' %}">ورود</a>
+    </p>
+</div>
+{% endblock %}

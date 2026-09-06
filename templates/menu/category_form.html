@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{% if object %}ویرایش دسته‌بندی{% else %}دسته‌بندی جدید{% endif %}{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>{% if object %}ویرایش دسته‌بندی{% else %}دسته‌بندی جدید{% endif %}</h1>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <ul class="errorlist">
+                    {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+        <button type="submit">ذخیره</button>
+        <a class="btn" style="background:#6b7280;" href="{% url 'menu:category_list' %}">انصراف</a>
+    </form>
+</div>
+{% endblock %}
