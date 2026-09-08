@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}گالری تصاویر{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <div class="top-bar">
+        <h1>گالری تصاویر رستوران</h1>
+        <a class="btn" href="{% url 'gallery_add' %}">+ افزودن تصویر</a>
+    </div>
+
+    {% if images %}
+    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;">
+        {% for img in images %}
+        <div style="width:160px;">
+            <img src="{{ img.image.url }}" alt="{{ img.caption }}" style="width:160px;height:120px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">
+            <p class="muted" style="margin:6px 0 2px;font-size:13px;">{{ img.caption|default:'—' }}</p>
+            <a class="delete-link" style="font-size:13px;" href="{% url 'gallery_delete' img.pk %}">حذف</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">هنوز تصویری به گالری اضافه نکرده‌اید.</p>
+    {% endif %}
+</div>
+{% endblock %}
