@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}حذف تصویر گالری{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>حذف تصویر</h1>
+    <img src="{{ object.image.url }}" alt="{{ object.caption }}" style="width:100%;max-width:300px;border-radius:8px;margin-bottom:16px;">
+    <p>آیا از حذف این تصویر مطمئن هستید؟</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" style="background:#dc2626;">بله، حذف شود</button>
+        <a class="btn" style="background:#6b7280;" href="{% url 'gallery_list' %}">انصراف</a>
+    </form>
+</div>
+{% endblock %}
