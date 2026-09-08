@@ -22,17 +22,28 @@
         {% if restaurant.phone %}<p class="meta">📞 {{ restaurant.phone }}</p>{% endif %}
     </div>
 
+    {% if gallery_images %}
+    <div class="gallery-strip">
+        {% for img in gallery_images %}
+            <img src="{{ img.image.url }}" alt="{{ img.caption|default:restaurant.name }}">
+        {% endfor %}
+    </div>
+    {% endif %}
+
     {% if categories %}
         {% for category in categories %}
             {% if category.products.all %}
             <div class="category-block">
                 <div class="category-title">{{ category.name }}</div>
                 {% for product in category.products.all %}
-                <div class="product-card">
-                    <div>
+                <a href="{% url 'product_detail' restaurant.slug product.pk %}" class="product-card" style="text-decoration:none;color:inherit;">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb">
+                    {% endif %}
+                    <div style="flex:1;">
                         <div class="product-name">{{ product.name }}</div>
                         {% if product.description %}
-                            <div class="product-desc">{{ product.description }}</div>
+                            <div class="product-desc">{{ product.description|truncatewords:12 }}</div>
                         {% endif %}
                     </div>
                     <div class="product-price">
@@ -42,7 +53,7 @@
                             {{ product.price }} تومان
                         {% endif %}
                     </div>
-                </div>
+                </a>
                 {% endfor %}
             </div>
             {% endif %}
