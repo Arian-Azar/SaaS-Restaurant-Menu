@@ -1,0 +1,44 @@
+{% extends 'public_base.html' %}
+
+{% block title %}{{ product.name }} | منوی {{ restaurant.name }}{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ product.description|default:product.name|truncatewords:20 }}">
+    <meta property="og:title" content="{{ product.name }} | {{ restaurant.name }}">
+    <meta property="og:description" content="{{ product.description|truncatewords:20 }}">
+    {% if product.image %}
+        <meta property="og:image" content="{{ product.image.url }}">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="menu-wrapper">
+    <div style="padding:14px 20px;">
+        <a href="{% url 'public_menu' restaurant.slug %}" style="color:#2563eb;text-decoration:none;font-size:14px;">
+            ← بازگشت به منوی {{ restaurant.name }}
+        </a>
+    </div>
+
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%;height:260px;object-fit:cover;">
+    {% endif %}
+
+    <div style="padding:20px;">
+        <p class="meta" style="margin:0 0 4px;">{{ product.category.name }}</p>
+        <h1 style="margin:0 0 10px;">{{ product.name }}</h1>
+
+        {% if product.description %}
+            <p style="color:#374151;line-height:1.8;">{{ product.description }}</p>
+        {% endif %}
+
+        <div style="margin-top:20px;font-size:20px;font-weight:700;">
+            {% if product.discount_price %}
+                <span style="color:#9ca3af;text-decoration:line-through;font-weight:400;font-size:15px;margin-left:8px;">{{ product.price }} تومان</span>
+                {{ product.discount_price }} تومان
+            {% else %}
+                {{ product.price }} تومان
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
