@@ -40,10 +40,17 @@
         .product-card {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             gap: 12px;
             padding: 12px 0;
             border-bottom: 1px solid #f1f5f9;
+        }
+        .product-thumb {
+            width: 56px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
         }
         .product-card:last-child { border-bottom: none; }
         .product-name { font-weight: 600; font-size: 15px; }
@@ -51,6 +58,19 @@
         .product-price { white-space: nowrap; font-weight: 700; font-size: 14px; }
         .product-price .original { color: #9ca3af; text-decoration: line-through; font-weight: 400; font-size: 12px; margin-left: 6px; }
         .empty-state { text-align: center; padding: 60px 20px; color: #6b7280; }
+        .gallery-strip {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 16px 20px 4px;
+        }
+        .gallery-strip img {
+            width: 110px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
         footer {
             text-align: center;
             padding: 24px;
