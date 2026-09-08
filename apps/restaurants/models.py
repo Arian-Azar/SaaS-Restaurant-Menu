@@ -17,7 +17,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 
-from apps.core.models import TimeStampedModel
+from apps.core.models import TenantModel, TimeStampedModel
 
 
 class Restaurant(TimeStampedModel):
@@ -70,3 +70,24 @@ class Restaurant(TimeStampedModel):
             counter += 1
             slug = f'{base_slug}-{counter}'
         return slug
+
+
+class RestaurantImage(TenantModel):
+    """
+    گالری تصاویر رستوران (فاز ۲ / بخش ۱).
+
+    برخلاف logo/cover_image که تک‌فیلد روی خود Restaurant هستند، اینجا هر
+    رستوران می‌تواند چند تصویر داشته باشد (مثلاً فضای داخلی، میزها، غذاهای
+    آماده). چون این مدل ذاتاً «متعلق به یک رستوران» است، از TenantModel
+    ارث‌بری می‌کند تا همان محافظت Tenant Isolation بخش ۲ را خودکار داشته باشد.
+    """
+
+    image = models.ImageField(upload_to='restaurants/gallery/')
+    caption = models.CharField(max_length=150, blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['sort_order', 'created_at']
+
+    def __str__(self):
+        return self.caption or f'تصویر گالری {self.restaurant.name}'
