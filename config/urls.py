@@ -19,8 +19,17 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from apps.restaurants.seo import robots_txt_response, sitemap_xml_response
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # عمداً در سطح بالای این فایل و قبل از include شدن apps.restaurants.urls
+    # قرار گرفته‌اند: آن اپ یک الگوی catch-all دارد (<str:slug>/) که در غیر
+    # این صورت می‌توانست 'robots.txt' یا 'sitemap.xml' را به اشتباه به‌عنوان
+    # اسلاگ یک رستوران تفسیر کند.
+    path('robots.txt', robots_txt_response, name='robots_txt'),
+    path('sitemap.xml', sitemap_xml_response, name='sitemap_xml'),
 
     path('accounts/', include('apps.accounts.urls')),
     path('panel/', include('apps.menu.urls', namespace='menu')),
