@@ -14,6 +14,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from apps.core.imaging import optimize_image_field
 from apps.core.models import TenantModel
 
 
@@ -40,6 +41,10 @@ class Category(TenantModel):
 
     def __str__(self):
         return f'{self.name} ({self.restaurant.name})'
+
+    def save(self, *args, **kwargs):
+        optimize_image_field(self.image, max_width=800, max_height=800)
+        super().save(*args, **kwargs)
 
 
 class Product(TenantModel):
@@ -87,6 +92,7 @@ class Product(TenantModel):
             )
 
     def save(self, *args, **kwargs):
+        optimize_image_field(self.image, max_width=1000, max_height=1000)
         self.full_clean()
         super().save(*args, **kwargs)
 
