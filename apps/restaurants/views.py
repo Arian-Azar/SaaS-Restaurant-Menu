@@ -11,6 +11,7 @@ from apps.menu.models import Category, Product
 
 from .forms import RestaurantImageForm
 from .models import Restaurant, RestaurantImage
+from .seo import build_product_json_ld, build_restaurant_json_ld
 from .utils import generate_qr_code_png
 
 
@@ -95,6 +96,7 @@ def restaurant_public_page(request, slug):
         # RestaurantImage.objects هم Tenant-Aware است، پس همان استدلال بالا
         # (کاربر anonymous → context خالی) اینجا هم صادق است؛ صراحتاً فیلتر می‌کنیم.
         'gallery_images': RestaurantImage.objects.filter(restaurant=restaurant),
+        'json_ld': build_restaurant_json_ld(request, restaurant, categories),
     }
     return render(request, 'restaurants/public_menu.html', context)
 
@@ -117,6 +119,7 @@ def product_detail_public(request, slug, pk):
     context = {
         'restaurant': restaurant,
         'product': product,
+        'json_ld': build_product_json_ld(request, product),
     }
     return render(request, 'restaurants/product_detail.html', context)
 
