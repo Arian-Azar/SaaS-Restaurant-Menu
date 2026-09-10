@@ -17,6 +17,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 
+from apps.core.imaging import optimize_image_field
 from apps.core.models import TenantModel, TimeStampedModel
 
 
@@ -59,6 +60,12 @@ class Restaurant(TimeStampedModel):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = self._generate_unique_slug()
+
+        # بهینه‌سازی تصاویر (فاز ۲ / بخش ۵): لوگو معمولاً مربعی و کوچک است،
+        # کاور یک بنر عریض‌تر — پس اندازه‌ی هدف هرکدام متفاوت است.
+        optimize_image_field(self.logo, max_width=400, max_height=400)
+        optimize_image_field(self.cover_image, max_width=1200, max_height=500)
+
         super().save(*args, **kwargs)
 
     def _generate_unique_slug(self) -> str:
@@ -91,3 +98,7 @@ class RestaurantImage(TenantModel):
 
     def __str__(self):
         return self.caption or f'تصویر گالری {self.restaurant.name}'
+
+    def save(self, *args, **kwargs):
+        optimize_image_field(self.image, max_width=1200, max_height=1200)
+        super().save(*args, **kwargs)
