@@ -1,4 +1,5 @@
 {% extends 'public_base.html' %}
+{% load static %}
 
 {% block title %}منوی {{ restaurant.name }}{% endblock %}
 
@@ -9,57 +10,128 @@
     {% if restaurant.cover_image %}
         <meta property="og:image" content="{{ restaurant.cover_image.url }}">
     {% endif %}
+    <script type="application/ld+json">{{ json_ld|safe }}</script>
+{% endblock %}
+
+{% block hero %}
+<section class="hero-wrap hero-wrap-2" style="background-image: url('{% if restaurant.cover_image %}{{ restaurant.cover_image.url }}{% else %}{% static 'menu_theme/images/bg_3.jpg' %}{% endif %}');" data-stellar-background-ratio="0.5">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row no-gutters slider-text align-items-end justify-content-center">
+      <div class="col-md-9 ftco-animate text-center mb-4">
+        <h1 class="mb-2 bread">{{ restaurant.name }}</h1>
+        {% if restaurant.description %}
+        <p class="breadcrumbs"><span>{{ restaurant.description }}</span></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
 
 {% block content %}
-<div class="menu-wrapper">
-    <div class="cover" style="{% if restaurant.cover_image %}background-image:url('{{ restaurant.cover_image.url }}');{% endif %}"></div>
 
-    <div class="restaurant-header">
-        <h1>{{ restaurant.name }}</h1>
-        {% if restaurant.description %}<p class="meta">{{ restaurant.description }}</p>{% endif %}
-        {% if restaurant.address %}<p class="meta">📍 {{ restaurant.address }}</p>{% endif %}
-        {% if restaurant.phone %}<p class="meta">📞 {{ restaurant.phone }}</p>{% endif %}
+{% if gallery_images %}
+<section class="ftco-section ftco-no-pb ftco-no-pt">
+  <div class="container">
+    <div class="owl-carousel home-slider" style="height:280px;">
+      {% for img in gallery_images %}
+      <div class="slider-item" style="height:280px;background-image:url('{{ img.image.url }}');background-size:cover;background-position:center;border-radius:8px;"></div>
+      {% endfor %}
     </div>
+  </div>
+</section>
+{% endif %}
 
-    {% if gallery_images %}
-    <div class="gallery-strip">
-        {% for img in gallery_images %}
-            <img src="{{ img.image.url }}" alt="{{ img.caption|default:restaurant.name }}">
-        {% endfor %}
-    </div>
-    {% endif %}
-
+<section class="ftco-section">
+  <div class="container">
     {% if categories %}
-        {% for category in categories %}
-            {% if category.products.all %}
-            <div class="category-block">
-                <div class="category-title">{{ category.name }}</div>
-                {% for product in category.products.all %}
-                <a href="{% url 'product_detail' restaurant.slug product.pk %}" class="product-card" style="text-decoration:none;color:inherit;">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb">
-                    {% endif %}
-                    <div style="flex:1;">
-                        <div class="product-name">{{ product.name }}</div>
-                        {% if product.description %}
-                            <div class="product-desc">{{ product.description|truncatewords:12 }}</div>
-                        {% endif %}
+    <div class="ftco-search">
+      <div class="row">
+        <div class="col-md-12 nav-link-wrap">
+          <div class="nav nav-pills d-flex text-center" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            {% for category in categories %}
+              {% if category.products.all %}
+              <a class="nav-link ftco-animate{% if forloop.first %} active{% endif %}"
+                 id="v-pills-{{ category.id }}-tab" data-toggle="pill"
+                 href="#v-pills-{{ category.id }}" role="tab"
+                 aria-controls="v-pills-{{ category.id }}"
+                 aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">{{ category.name }}</a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="col-md-12 tab-wrap">
+          <div class="tab-content" id="v-pills-tabContent">
+            {% for category in categories %}
+              {% if category.products.all %}
+              <div class="tab-pane fade{% if forloop.first %} show active{% endif %}"
+                   id="v-pills-{{ category.id }}" role="tabpanel"
+                   aria-labelledby="v-pills-{{ category.id }}-tab">
+                <div class="row no-gutters d-flex align-items-stretch">
+                  {% for product in category.products.all %}
+                  <div class="col-md-12 col-lg-6 d-flex align-self-stretch">
+                    <div class="menus d-sm-flex ftco-animate align-items-stretch">
+                      {% if product.image %}
+                      <div class="menu-img img{% if forloop.counter0|divisibleby:2 == False %} order-md-last{% endif %}" style="background-image: url('{{ product.image.url }}');"></div>
+                      {% endif %}
+                      <div class="text d-flex align-items-center">
+                        <div>
+                          <div class="d-flex">
+                            <div class="one-half">
+                              <h3>{{ product.name }}</h3>
+                            </div>
+                            <div class="one-forth">
+                              {% if product.discount_price %}
+                                <span class="price">{{ product.discount_price }} تومان</span>
+                              {% else %}
+                                <span class="price">{{ product.price }} تومان</span>
+                              {% endif %}
+                            </div>
+                          </div>
+                          {% if product.description %}
+                          <p>{{ product.description }}</p>
+                          {% endif %}
+                          <p><a href="{% url 'product_detail' restaurant.slug product.pk %}" class="btn btn-primary">مشاهده جزئیات</a></p>
+                        </div>
+                      </div>
                     </div>
-                    <div class="product-price">
-                        {% if product.discount_price %}
-                            <span class="original">{{ product.price }}</span>{{ product.discount_price }} تومان
-                        {% else %}
-                            {{ product.price }} تومان
-                        {% endif %}
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
-            {% endif %}
-        {% endfor %}
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
     {% else %}
-        <div class="empty-state">منوی این رستوران هنوز آماده نشده است.</div>
+    <div class="text-center py-5">
+      <p>منوی این رستوران هنوز آماده نشده است.</p>
+    </div>
     {% endif %}
-</div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // راه‌اندازی Owl Carousel گالری تصاویر (فقط اگر گالری‌ای وجود داشته باشد)
+  jQuery(function($) {
+    if ($('.home-slider').length > 0) {
+      $('.home-slider').owlCarousel({
+        loop: true,
+        autoplay: true,
+        margin: 10,
+        nav: false,
+        dots: true,
+        items: 1,
+        responsive: { 600: { items: 2 }, 1000: { items: 3 } }
+      });
+    }
+  });
+</script>
 {% endblock %}
