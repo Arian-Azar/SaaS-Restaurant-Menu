@@ -1,0 +1,183 @@
+/*
+ * rtl-fix.css
+ * جایگزینیِ کلاس‌های جهت‌دار Bootstrap 4 (که برای LTR کامپایل شده) با معادل RTL.
+ * این فایل باید در HTML بعد از بارگذاری bootstrap.min.css و style.css لود شود
+ * (یعنی آخرین <link> در <head>). خود کتابخانه‌های اصلی دست‌نخورده می‌مانند —
+ * این فایل فقط چند قانون override با !important اضافه می‌کند.
+ */
+
+html { direction: rtl; }
+
+/* Margin / Padding چپ-راست (mr<->ml , pr<->pl) به‌همراه حالت‌های ریسپانسیو و auto */
+.mr-0 { margin-right: 0 !important; margin-left: 0 !important; }
+.ml-0 { margin-left: 0 !important; margin-right: 0 !important; }
+.pr-0 { padding-right: 0 !important; padding-left: 0 !important; }
+.pl-0 { padding-left: 0 !important; padding-right: 0 !important; }
+.mr-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+.ml-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+.pr-1 { padding-right: 0 !important; padding-left: 0.25rem !important; }
+.pl-1 { padding-left: 0 !important; padding-right: 0.25rem !important; }
+.mr-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+.ml-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+.pr-2 { padding-right: 0 !important; padding-left: 0.5rem !important; }
+.pl-2 { padding-left: 0 !important; padding-right: 0.5rem !important; }
+.mr-3 { margin-right: 0 !important; margin-left: 1rem !important; }
+.ml-3 { margin-left: 0 !important; margin-right: 1rem !important; }
+.pr-3 { padding-right: 0 !important; padding-left: 1rem !important; }
+.pl-3 { padding-left: 0 !important; padding-right: 1rem !important; }
+.mr-4 { margin-right: 0 !important; margin-left: 1.5rem !important; }
+.ml-4 { margin-left: 0 !important; margin-right: 1.5rem !important; }
+.pr-4 { padding-right: 0 !important; padding-left: 1.5rem !important; }
+.pl-4 { padding-left: 0 !important; padding-right: 1.5rem !important; }
+.mr-5 { margin-right: 0 !important; margin-left: 3rem !important; }
+.ml-5 { margin-left: 0 !important; margin-right: 3rem !important; }
+.pr-5 { padding-right: 0 !important; padding-left: 3rem !important; }
+.pl-5 { padding-left: 0 !important; padding-right: 3rem !important; }
+.mr-auto { margin-right: 0 !important; margin-left: auto !important; }
+.ml-auto { margin-left: 0 !important; margin-right: auto !important; }
+
+.mr-sm-0 { margin-right: 0 !important; margin-left: 0 !important; }
+.ml-sm-0 { margin-left: 0 !important; margin-right: 0 !important; }
+.pr-sm-0 { padding-right: 0 !important; padding-left: 0 !important; }
+.pl-sm-0 { padding-left: 0 !important; padding-right: 0 !important; }
+.mr-sm-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+.ml-sm-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+.pr-sm-1 { padding-right: 0 !important; padding-left: 0.25rem !important; }
+.pl-sm-1 { padding-left: 0 !important; padding-right: 0.25rem !important; }
+.mr-sm-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+.ml-sm-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+.pr-sm-2 { padding-right: 0 !important; padding-left: 0.5rem !important; }
+.pl-sm-2 { padding-left: 0 !important; padding-right: 0.5rem !important; }
+.mr-sm-3 { margin-right: 0 !important; margin-left: 1rem !important; }
+.ml-sm-3 { margin-left: 0 !important; margin-right: 1rem !important; }
+.pr-sm-3 { padding-right: 0 !important; padding-left: 1rem !important; }
+.pl-sm-3 { padding-left: 0 !important; padding-right: 1rem !important; }
+.mr-sm-4 { margin-right: 0 !important; margin-left: 1.5rem !important; }
+.ml-sm-4 { margin-left: 0 !important; margin-right: 1.5rem !important; }
+.pr-sm-4 { padding-right: 0 !important; padding-left: 1.5rem !important; }
+.pl-sm-4 { padding-left: 0 !important; padding-right: 1.5rem !important; }
+.mr-sm-5 { margin-right: 0 !important; margin-left: 3rem !important; }
+.ml-sm-5 { margin-left: 0 !important; margin-right: 3rem !important; }
+.pr-sm-5 { padding-right: 0 !important; padding-left: 3rem !important; }
+.pl-sm-5 { padding-left: 0 !important; padding-right: 3rem !important; }
+.mr-sm-auto { margin-right: 0 !important; margin-left: auto !important; }
+.ml-sm-auto { margin-left: 0 !important; margin-right: auto !important; }
+
+.mr-md-0 { margin-right: 0 !important; margin-left: 0 !important; }
+.ml-md-0 { margin-left: 0 !important; margin-right: 0 !important; }
+.pr-md-0 { padding-right: 0 !important; padding-left: 0 !important; }
+.pl-md-0 { padding-left: 0 !important; padding-right: 0 !important; }
+.mr-md-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+.ml-md-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+.pr-md-1 { padding-right: 0 !important; padding-left: 0.25rem !important; }
+.pl-md-1 { padding-left: 0 !important; padding-right: 0.25rem !important; }
+.mr-md-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+.ml-md-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+.pr-md-2 { padding-right: 0 !important; padding-left: 0.5rem !important; }
+.pl-md-2 { padding-left: 0 !important; padding-right: 0.5rem !important; }
+.mr-md-3 { margin-right: 0 !important; margin-left: 1rem !important; }
+.ml-md-3 { margin-left: 0 !important; margin-right: 1rem !important; }
+.pr-md-3 { padding-right: 0 !important; padding-left: 1rem !important; }
+.pl-md-3 { padding-left: 0 !important; padding-right: 1rem !important; }
+.mr-md-4 { margin-right: 0 !important; margin-left: 1.5rem !important; }
+.ml-md-4 { margin-left: 0 !important; margin-right: 1.5rem !important; }
+.pr-md-4 { padding-right: 0 !important; padding-left: 1.5rem !important; }
+.pl-md-4 { padding-left: 0 !important; padding-right: 1.5rem !important; }
+.mr-md-5 { margin-right: 0 !important; margin-left: 3rem !important; }
+.ml-md-5 { margin-left: 0 !important; margin-right: 3rem !important; }
+.pr-md-5 { padding-right: 0 !important; padding-left: 3rem !important; }
+.pl-md-5 { padding-left: 0 !important; padding-right: 3rem !important; }
+.mr-md-auto { margin-right: 0 !important; margin-left: auto !important; }
+.ml-md-auto { margin-left: 0 !important; margin-right: auto !important; }
+
+.mr-lg-0 { margin-right: 0 !important; margin-left: 0 !important; }
+.ml-lg-0 { margin-left: 0 !important; margin-right: 0 !important; }
+.pr-lg-0 { padding-right: 0 !important; padding-left: 0 !important; }
+.pl-lg-0 { padding-left: 0 !important; padding-right: 0 !important; }
+.mr-lg-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+.ml-lg-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+.pr-lg-1 { padding-right: 0 !important; padding-left: 0.25rem !important; }
+.pl-lg-1 { padding-left: 0 !important; padding-right: 0.25rem !important; }
+.mr-lg-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+.ml-lg-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+.pr-lg-2 { padding-right: 0 !important; padding-left: 0.5rem !important; }
+.pl-lg-2 { padding-left: 0 !important; padding-right: 0.5rem !important; }
+.mr-lg-3 { margin-right: 0 !important; margin-left: 1rem !important; }
+.ml-lg-3 { margin-left: 0 !important; margin-right: 1rem !important; }
+.pr-lg-3 { padding-right: 0 !important; padding-left: 1rem !important; }
+.pl-lg-3 { padding-left: 0 !important; padding-right: 1rem !important; }
+.mr-lg-4 { margin-right: 0 !important; margin-left: 1.5rem !important; }
+.ml-lg-4 { margin-left: 0 !important; margin-right: 1.5rem !important; }
+.pr-lg-4 { padding-right: 0 !important; padding-left: 1.5rem !important; }
+.pl-lg-4 { padding-left: 0 !important; padding-right: 1.5rem !important; }
+.mr-lg-5 { margin-right: 0 !important; margin-left: 3rem !important; }
+.ml-lg-5 { margin-left: 0 !important; margin-right: 3rem !important; }
+.pr-lg-5 { padding-right: 0 !important; padding-left: 3rem !important; }
+.pl-lg-5 { padding-left: 0 !important; padding-right: 3rem !important; }
+.mr-lg-auto { margin-right: 0 !important; margin-left: auto !important; }
+.ml-lg-auto { margin-left: 0 !important; margin-right: auto !important; }
+
+.mr-xl-0 { margin-right: 0 !important; margin-left: 0 !important; }
+.ml-xl-0 { margin-left: 0 !important; margin-right: 0 !important; }
+.pr-xl-0 { padding-right: 0 !important; padding-left: 0 !important; }
+.pl-xl-0 { padding-left: 0 !important; padding-right: 0 !important; }
+.mr-xl-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+.ml-xl-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+.pr-xl-1 { padding-right: 0 !important; padding-left: 0.25rem !important; }
+.pl-xl-1 { padding-left: 0 !important; padding-right: 0.25rem !important; }
+.mr-xl-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+.ml-xl-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+.pr-xl-2 { padding-right: 0 !important; padding-left: 0.5rem !important; }
+.pl-xl-2 { padding-left: 0 !important; padding-right: 0.5rem !important; }
+.mr-xl-3 { margin-right: 0 !important; margin-left: 1rem !important; }
+.ml-xl-3 { margin-left: 0 !important; margin-right: 1rem !important; }
+.pr-xl-3 { padding-right: 0 !important; padding-left: 1rem !important; }
+.pl-xl-3 { padding-left: 0 !important; padding-right: 1rem !important; }
+.mr-xl-4 { margin-right: 0 !important; margin-left: 1.5rem !important; }
+.ml-xl-4 { margin-left: 0 !important; margin-right: 1.5rem !important; }
+.pr-xl-4 { padding-right: 0 !important; padding-left: 1.5rem !important; }
+.pl-xl-4 { padding-left: 0 !important; padding-right: 1.5rem !important; }
+.mr-xl-5 { margin-right: 0 !important; margin-left: 3rem !important; }
+.ml-xl-5 { margin-left: 0 !important; margin-right: 3rem !important; }
+.pr-xl-5 { padding-right: 0 !important; padding-left: 3rem !important; }
+.pl-xl-5 { padding-left: 0 !important; padding-right: 3rem !important; }
+.mr-xl-auto { margin-right: 0 !important; margin-left: auto !important; }
+.ml-xl-auto { margin-left: 0 !important; margin-right: auto !important; }
+
+/* Text alignment */
+.text-left { text-align: right !important; }
+.text-right { text-align: left !important; }
+.text-sm-left { text-align: right !important; }
+.text-sm-right { text-align: left !important; }
+.text-md-left { text-align: right !important; }
+.text-md-right { text-align: left !important; }
+.text-lg-left { text-align: right !important; }
+.text-lg-right { text-align: left !important; }
+.text-xl-left { text-align: right !important; }
+.text-xl-right { text-align: left !important; }
+
+/* Float */
+.float-left { float: right !important; }
+.float-right { float: left !important; }
+.float-sm-left { float: right !important; }
+.float-sm-right { float: left !important; }
+.float-md-left { float: right !important; }
+.float-md-right { float: left !important; }
+.float-lg-left { float: right !important; }
+.float-lg-right { float: left !important; }
+.float-xl-left { float: right !important; }
+.float-xl-right { float: left !important; }
+
+/* Border radius (کارت‌ها، دکمه‌ها، اینپوت‌ها) */
+.rounded-left { border-radius: 0 !important; border-top-right-radius: 0.25rem !important; border-bottom-right-radius: 0.25rem !important; }
+.rounded-right { border-radius: 0 !important; border-top-left-radius: 0.25rem !important; border-bottom-left-radius: 0.25rem !important; }
+
+/* Dropdown (برای آینده، اگر جایی استفاده شد) */
+.dropdown-menu-right { right: auto !important; left: 0 !important; }
+
+/* آیکون کنار متن در نوار بالای سایت (تلفن/آدرس) باید سمت راستِ متن بیاید */
+.topper .icon { margin-right: 0 !important; margin-left: 0.5rem !important; }
+
+/* لیست breadcrumb (Home > Menu) باید در جهت درست فارسی نمایش داده شود */
+.breadcrumbs span { margin-left: 0 !important; margin-right: 0.5rem !important; }
+
