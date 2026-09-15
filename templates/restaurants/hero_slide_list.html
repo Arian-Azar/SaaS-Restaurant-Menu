@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}اسلایدر هیرو{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <div class="top-bar">
+        <h1>اسلایدر هیرو (بالای صفحه اصلی)</h1>
+        <a class="btn" href="{% url 'hero_slide_add' %}">+ افزودن اسلاید</a>
+    </div>
+    <p class="muted">این تصاویر به‌صورت اسلایدشو در بالاترین بخش صفحه عمومی رستوران نمایش داده می‌شوند.</p>
+
+    {% if slides %}
+    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;">
+        {% for slide in slides %}
+        <div style="width:220px;">
+            <img src="{{ slide.image.url }}" alt="{{ slide.title }}" style="width:220px;height:140px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;">
+            <p style="margin:6px 0 0;font-size:14px;font-weight:600;">{{ slide.title|default:'—' }}</p>
+            <p class="muted" style="margin:0 0 4px;font-size:13px;">{{ slide.subtitle|default:'' }}</p>
+            {% if not slide.is_active %}<span class="badge badge-inactive">غیرفعال</span>{% endif %}
+            <br>
+            <a class="delete-link" style="font-size:13px;" href="{% url 'hero_slide_delete' slide.pk %}">حذف</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">هنوز اسلایدی اضافه نکرده‌اید. بدون اسلاید، تصویر کاور رستوران (یا یک تصویر پیش‌فرض) نمایش داده می‌شود.</p>
+    {% endif %}
+</div>
+{% endblock %}

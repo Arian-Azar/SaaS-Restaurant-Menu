@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}افزودن اسلاید هیرو{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>افزودن اسلاید هیرو</h1>
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="muted" style="margin:2px 0 0;font-size:12px;">{{ field.help_text }}</p>{% endif %}
+            {% if field.errors %}
+                <ul class="errorlist">
+                    {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+        <button type="submit">ذخیره</button>
+        <a class="btn" style="background:#6b7280;" href="{% url 'hero_slide_list' %}">انصراف</a>
+    </form>
+</div>
+{% endblock %}
