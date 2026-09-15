@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}آمار صفحه اصلی{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <div class="top-bar">
+        <h1>آمار صفحه اصلی</h1>
+        <a class="btn" href="{% url 'stat_add' %}">+ افزودن آمار</a>
+    </div>
+    <p class="muted">این اعداد در صفحه عمومی رستوران شما (مثلاً «۱۰ سال تجربه»، «۵۰۰+ مشتری راضی») نمایش داده می‌شوند.</p>
+
+    {% if stats %}
+    <table>
+        <thead>
+            <tr>
+                <th>عنوان</th>
+                <th>عدد</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in stats %}
+            <tr>
+                <td>{{ s.label }}</td>
+                <td>{{ s.number }}</td>
+                <td class="actions">
+                    <a class="delete-link" href="{% url 'stat_delete' s.pk %}">حذف</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="muted">هنوز آماری اضافه نکرده‌اید.</p>
+    {% endif %}
+</div>
+{% endblock %}
