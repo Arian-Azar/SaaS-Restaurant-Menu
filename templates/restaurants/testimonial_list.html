@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}نظرات مشتریان{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <div class="top-bar">
+        <h1>نظرات مشتریان</h1>
+        <a class="btn" href="{% url 'testimonial_add' %}">+ افزودن نظر</a>
+    </div>
+
+    {% if testimonials %}
+    <table>
+        <thead>
+            <tr>
+                <th>مشتری</th>
+                <th>نظر</th>
+                <th>امتیاز</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in testimonials %}
+            <tr>
+                <td>{{ t.customer_name }}</td>
+                <td>{{ t.comment|truncatewords:10 }}</td>
+                <td>{{ t.rating|default:'—' }}</td>
+                <td>
+                    {% if t.is_active %}
+                        <span class="badge badge-active">نمایش داده می‌شود</span>
+                    {% else %}
+                        <span class="badge badge-inactive">مخفی</span>
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a class="delete-link" href="{% url 'testimonial_delete' t.pk %}">حذف</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="muted">هنوز نظری ثبت نکرده‌اید. نظرات واقعی مشتریانتان (مثلاً از گوگل یا اینستاگرام) را اینجا وارد کنید تا در صفحه عمومی نمایش داده شود.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}حذف نظر{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>حذف نظر مشتری</h1>
+    <p>آیا از حذف نظر «{{ object.customer_name }}» مطمئن هستید؟</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" style="background:#dc2626;">بله، حذف شود</button>
+        <a class="btn" style="background:#6b7280;" href="{% url 'testimonial_list' %}">انصراف</a>
+    </form>
+</div>
+{% endblock %}
