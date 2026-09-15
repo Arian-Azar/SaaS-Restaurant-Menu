@@ -102,3 +102,101 @@ class RestaurantImage(TenantModel):
     def save(self, *args, **kwargs):
         optimize_image_field(self.image, max_width=1200, max_height=1200)
         super().save(*args, **kwargs)
+
+
+class Testimonial(TenantModel):
+    """
+    نظرات مشتریان (بخش «صفحه اصلی» تمپلیت — Testimonials).
+
+    برخلاف تمپلیت اصلی که این نظرات ثابت/دمو بودند، اینجا هر صاحب رستوران
+    از پنل مدیریت خودش نظرات واقعی مشتریانش را وارد می‌کند (مثلاً کپی از
+    گوگل/اینستاگرام). این مدل هیچ فرم ثبت نظر عمومی برای مشتری ندارد —
+    یعنی مشتری نمی‌تواند مستقیماً نظر ثبت کند؛ چون آن نیاز به یک فرآیند
+    تعدیل (moderation) دارد که فعلاً خارج از محدوده است.
+    """
+
+    customer_name = models.CharField(max_length=100)
+    comment = models.TextField()
+    rating = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        help_text='امتیاز از ۱ تا ۵ (اختیاری).',
+    )
+    avatar = models.ImageField(upload_to='restaurants/testimonials/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['sort_order', '-created_at']
+
+    def __str__(self):
+        return f'{self.customer_name} — {self.restaurant.name}'
+
+    def save(self, *args, **kwargs):
+        optimize_image_field(self.avatar, max_width=200, max_height=200)
+        super().save(*args, **kwargs)
+
+
+class RestaurantStat(TenantModel):
+    """
+    آمار/شمارنده‌های صفحه اصلی (بخش Counter تمپلیت: «۱۸ سال تجربه» و مشابه).
+
+    برخلاف تمپلیت اصلی که این اعداد برای همه یکسان و ثابت بودند، اینجا هر
+    رستوران آمار دلخواه خودش را تعریف می‌کند (مثلاً «۱۰ سال تجربه»،
+    «۵۰۰+ مشتری راضی»). عمداً یک مدل عمومیِ (label, number) طراحی شده،
+    نه فیلدهای ثابت (years_of_experience, staff_count, ...) روی خود
+    Restaurant، چون این‌طوری هر رستوران می‌تواند هر تعداد و هر نوع آماری
+    که برایش معنادار است اضافه کند، بدون نیاز به migration جدید.
+
+    نکته: یکی از آمارهای رایج («تعداد غذاهای منو») نیازی به این مدل ندارد
+    و مستقیماً و همیشه صحیح از طریق Product.objects.count() در View محاسبه
+    می‌شود — پس دوباره اینجا وارد نمی‌شود تا داده تکراری/ناهماهنگ نشود.
+    """
+
+    label = models.CharField(max_length=100, help_text='مثلاً «سال‌های تجربه» یا «مشتری راضی»')
+    number = models.PositiveIntegerField()
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['sort_order']
+
+    def __str__(self):
+        return f'{self.label}: {self.number} ({self.restaurant.name})'
+
+
+class HeroSlide(TenantModel):
+    """
+    اسلاید اختصاصی هیرو (بخش بالای صفحه اصلی).
+
+    این مدل عمداً از RestaurantImage (گالری) جداست، چون هدف و فیلدهای
+    موردنیازش فرق دارد: هر اسلاید هیرو نیاز به یک عنوان بزرگ (title) و یک
+    زیرعنوان کوچک (subtitle) دارد که مستقیم روی تصویر با فونت درشت نمایش
+    داده می‌شود — چیزی که یک caption ساده‌ی گالری برایش طراحی نشده بود.
+    جدا نگه‌داشتن این دو مدل یعنی صاحب رستوران می‌تواند گالری عمومی و
+    اسلایدر هیرو را کاملاً مستقل از هم مدیریت کند.
+    """
+
+    image = models.ImageField(upload_to='restaurants/hero/')
+    title = models.CharField(
+        max_length=150,
+        blank=True,
+        help_text='عنوان بزرگ روی اسلاید؛ اگر خالی بماند، نام رستوران نمایش داده می‌شود.',
+    )
+    subtitle = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text='زیرعنوان کوچک (مثلاً یک شعار کوتاه).',
+    )
+    sort_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['sort_order', 'created_at']
+
+    def __str__(self):
+        return self.title or f'اسلاید هیرو {self.restaurant.name}'
+
+    def save(self, *args, **kwargs):
+        # ابعاد بزرگ‌تر از بقیه‌ی تصاویر چون این عکس تمام‌عرض/تمام‌صفحه نمایش داده می‌شود.
+        optimize_image_field(self.image, max_width=1920, max_height=1080)
+        super().save(*args, **kwargs)
