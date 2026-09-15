@@ -35,8 +35,15 @@ def _safe_json_ld(data: dict) -> str:
     return json.dumps(data, ensure_ascii=False).replace('</', '<\\/')
 
 
-def build_restaurant_json_ld(request, restaurant, categories) -> str:
-    """JSON-LD نوع Restaurant + Menu برای صفحه‌ی اصلی منوی رستوران."""
+def build_restaurant_json_ld(request, restaurant, categories, testimonials=None) -> str:
+    """
+    JSON-LD نوع Restaurant + Menu برای صفحه‌ی اصلی منوی رستوران.
+
+    اگر testimonials (نظرات فعال مشتریان) داده شود، فیلدهای aggregateRating
+    و review هم اضافه می‌شود — این باعث می‌شود گوگل بتواند امتیاز رستوران
+    را مستقیم در نتایج جستجو (ستاره‌های زرد) نمایش دهد. فقط نظراتی که
+    rating دارند در محاسبه‌ی میانگین وارد می‌شوند (چون rating اختیاری است).
+    """
     menu_sections = []
     for category in categories:
         items = []
@@ -78,6 +85,28 @@ def build_restaurant_json_ld(request, restaurant, categories) -> str:
         data['image'] = request.build_absolute_uri(restaurant.cover_image.url)
     if menu_sections:
         data['hasMenu'] = {'@type': 'Menu', 'hasMenuSection': menu_sections}
+
+    if testimonials:
+        rated = [t for t in testimonials if t.rating]
+        if rated:
+            average = sum(t.rating for t in rated) / len(rated)
+            data['aggregateRating'] = {
+                '@type': 'AggregateRating',
+                'ratingValue': round(average, 1),
+                'reviewCount': len(rated),
+            }
+        reviews = []
+        for t in testimonials:
+            review = {
+                '@type': 'Review',
+                'author': {'@type': 'Person', 'name': t.customer_name},
+                'reviewBody': t.comment,
+            }
+            if t.rating:
+                review['reviewRating'] = {'@type': 'Rating', 'ratingValue': t.rating}
+            reviews.append(review)
+        if reviews:
+            data['review'] = reviews
 
     # ensure_ascii=False تا کاراکترهای فارسی به‌جای \uXXXX خوانا بمانند.
     return _safe_json_ld(data)
