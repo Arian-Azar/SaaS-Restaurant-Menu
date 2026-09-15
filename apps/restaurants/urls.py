@@ -10,6 +10,18 @@ urlpatterns = [
     path('gallery/add/', views.RestaurantImageCreateView.as_view(), name='gallery_add'),
     path('gallery/<int:pk>/delete/', views.RestaurantImageDeleteView.as_view(), name='gallery_delete'),
 
+    path('hero-slides/', views.HeroSlideListView.as_view(), name='hero_slide_list'),
+    path('hero-slides/add/', views.HeroSlideCreateView.as_view(), name='hero_slide_add'),
+    path('hero-slides/<int:pk>/delete/', views.HeroSlideDeleteView.as_view(), name='hero_slide_delete'),
+
+    path('testimonials/', views.TestimonialListView.as_view(), name='testimonial_list'),
+    path('testimonials/add/', views.TestimonialCreateView.as_view(), name='testimonial_add'),
+    path('testimonials/<int:pk>/delete/', views.TestimonialDeleteView.as_view(), name='testimonial_delete'),
+
+    path('stats/', views.RestaurantStatListView.as_view(), name='stat_list'),
+    path('stats/add/', views.RestaurantStatCreateView.as_view(), name='stat_add'),
+    path('stats/<int:pk>/delete/', views.RestaurantStatDeleteView.as_view(), name='stat_delete'),
+
     # صفحه‌ی جزئیات محصول (فاز ۲ / بخش ۲) — چون دو بخشی است (اسلاگ + pk)،
     # هرگز با الگوی تک‌بخشیِ <str:slug>/ زیرش تداخل نمی‌کند؛ با این حال طبق
     # قرارداد این فایل، همچنان بالاتر از آن نوشته شده تا خوانا بماند.
