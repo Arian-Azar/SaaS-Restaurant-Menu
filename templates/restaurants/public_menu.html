@@ -1,11 +1,11 @@
 {% extends 'public_base.html' %}
 {% load static %}
 
-{% block title %}منوی {{ restaurant.name }}{% endblock %}
+{% block title %}{{ restaurant.name }}{% endblock %}
 
 {% block meta %}
     <meta name="description" content="منوی آنلاین {{ restaurant.name }}{% if restaurant.address %} - {{ restaurant.address }}{% endif %}">
-    <meta property="og:title" content="منوی {{ restaurant.name }}">
+    <meta property="og:title" content="{{ restaurant.name }}">
     <meta property="og:description" content="{{ restaurant.description|truncatewords:20 }}">
     {% if restaurant.cover_image %}
         <meta property="og:image" content="{{ restaurant.cover_image.url }}">
@@ -14,30 +14,115 @@
 {% endblock %}
 
 {% block hero %}
-<section class="hero-wrap hero-wrap-2" style="background-image: url('{% if restaurant.cover_image %}{{ restaurant.cover_image.url }}{% else %}{% static 'menu_theme/images/bg_3.jpg' %}{% endif %}');" data-stellar-background-ratio="0.5">
-  <div class="overlay"></div>
-  <div class="container">
-    <div class="row no-gutters slider-text align-items-end justify-content-center">
-      <div class="col-md-9 ftco-animate text-center mb-4">
-        <h1 class="mb-2 bread">{{ restaurant.name }}</h1>
-        {% if restaurant.description %}
-        <p class="breadcrumbs"><span>{{ restaurant.description }}</span></p>
-        {% endif %}
+{# --- اسلایدر هیرو اختصاصی (HeroSlide) --- #}
+<section class="home-slider owl-carousel js-fullheight">
+  {% if hero_slides %}
+    {% for slide in hero_slides %}
+    <div class="slider-item js-fullheight" style="background-image: url('{{ slide.image.url }}');">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row slider-text js-fullheight justify-content-center align-items-center" data-scrollax-parent="true">
+          <div class="col-md-12 col-sm-12 text-center ftco-animate">
+            <span class="subheading">{{ slide.subtitle|default:'خوش آمدید' }}</span>
+            <h1 class="mb-4">{{ slide.title|default:restaurant.name }}</h1>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+    {% endfor %}
+  {% else %}
+    <div class="slider-item js-fullheight" style="background-image: url('{% if restaurant.cover_image %}{{ restaurant.cover_image.url }}{% else %}{% static 'menu_theme/images/bg_1.jpg' %}{% endif %}');">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row slider-text js-fullheight justify-content-center align-items-center" data-scrollax-parent="true">
+          <div class="col-md-12 col-sm-12 text-center ftco-animate">
+            <span class="subheading">خوش آمدید</span>
+            <h1 class="mb-4">{{ restaurant.name }}</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
 </section>
 {% endblock %}
 
 {% block content %}
 
-{% if gallery_images %}
-<section class="ftco-section ftco-no-pb ftco-no-pt">
+{% if restaurant.description %}
+<section class="ftco-section ftco-wrap-about">
   <div class="container">
-    <div class="owl-carousel home-slider" style="height:280px;">
-      {% for img in gallery_images %}
-      <div class="slider-item" style="height:280px;background-image:url('{{ img.image.url }}');background-size:cover;background-position:center;border-radius:8px;"></div>
+    <div class="row">
+      <div class="col-md-7 d-flex">
+        <div class="img img-1 mr-md-2" style="background-image: url('{% if restaurant.cover_image %}{{ restaurant.cover_image.url }}{% else %}{% static 'menu_theme/images/about.jpg' %}{% endif %}');"></div>
+        {% if gallery_images.0 %}
+        <div class="img img-2 ml-md-2" style="background-image: url('{{ gallery_images.0.image.url }}');"></div>
+        {% endif %}
+      </div>
+      <div class="col-md-5 wrap-about pt-5 pt-md-5 pb-md-3 ftco-animate">
+        <div class="heading-section mb-4 my-5 my-md-0">
+          <span class="subheading">درباره ما</span>
+          <h2 class="mb-4">{{ restaurant.name }}</h2>
+        </div>
+        <p>{{ restaurant.description }}</p>
+        {% if restaurant.phone or restaurant.address %}
+        <p class="time">
+          {% if restaurant.address %}<span>📍 {{ restaurant.address }}</span>{% endif %}
+          {% if restaurant.phone %}<span><a href="tel:{{ restaurant.phone }}">{{ restaurant.phone }}</a></span>{% endif %}
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if gallery_images %}
+<section class="ftco-section ftco-no-pb bg-light">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-12 text-center heading-section ftco-animate">
+        <span class="subheading">گالری</span>
+        <h2 class="mb-0">فضای {{ restaurant.name }}</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="gallery-carousel owl-carousel">
+          {% for img in gallery_images %}
+          <div class="item">
+            <div style="height:220px;background-image:url('{{ img.image.url }}');background-size:cover;background-position:center;border-radius:8px;"></div>
+            {% if img.caption %}<p class="text-center mt-2 mb-0">{{ img.caption }}</p>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if stats %}
+<section class="ftco-section ftco-counter img ftco-no-pt" id="section-counter">
+  <div class="container">
+    <div class="row d-md-flex align-items-center justify-content-center">
+      {% for s in stats %}
+      <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 d-flex justify-content-center counter-wrap ftco-animate">
+        <div class="block-18">
+          <div class="text">
+            <strong class="number" data-number="{{ s.number }}">0</strong>
+            <span>{{ s.label }}</span>
+          </div>
+        </div>
+      </div>
       {% endfor %}
+      <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 d-flex justify-content-center counter-wrap ftco-animate">
+        <div class="block-18">
+          <div class="text">
+            <strong class="number" data-number="{{ product_count }}">0</strong>
+            <span>غذای منو</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -46,6 +131,13 @@
 <section class="ftco-section">
   <div class="container">
     {% if categories %}
+    <div class="row no-gutters justify-content-center mb-5 pb-2">
+      <div class="col-md-12 text-center heading-section ftco-animate">
+        <span class="subheading">منو</span>
+        <h2 class="mb-4">منوی {{ restaurant.name }}</h2>
+      </div>
+    </div>
+
     <div class="ftco-search">
       <div class="row">
         <div class="col-md-12 nav-link-wrap">
@@ -56,7 +148,10 @@
                  id="v-pills-{{ category.id }}-tab" data-toggle="pill"
                  href="#v-pills-{{ category.id }}" role="tab"
                  aria-controls="v-pills-{{ category.id }}"
-                 aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">{{ category.name }}</a>
+                 aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                {% if category.image %}<img src="{{ category.image.url }}" alt="" style="width:22px;height:22px;object-fit:cover;border-radius:50%;margin-left:6px;vertical-align:middle;">{% endif %}
+                {{ category.name }}
+              </a>
               {% endif %}
             {% endfor %}
           </div>
@@ -75,6 +170,8 @@
                     <div class="menus d-sm-flex ftco-animate align-items-stretch">
                       {% if product.image %}
                       <div class="menu-img img{% if forloop.counter0|divisibleby:2 == False %} order-md-last{% endif %}" style="background-image: url('{{ product.image.url }}');"></div>
+                      {% else %}
+                      <div class="menu-img img{% if forloop.counter0|divisibleby:2 == False %} order-md-last{% endif %}" style="background-color:#f4ede4;display:flex;align-items:center;justify-content:center;color:#c8a97e;font-size:32px;">🍽</div>
                       {% endif %}
                       <div class="text d-flex align-items-center">
                         <div>
@@ -115,20 +212,77 @@
   </div>
 </section>
 
+{% if testimonials %}
+<section class="ftco-section testimony-section img">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-12 text-center heading-section ftco-animate">
+        <span class="subheading">نظرات</span>
+        <h2 class="mb-4">مشتریان راضی</h2>
+      </div>
+    </div>
+    <div class="row ftco-animate justify-content-center">
+      <div class="col-md-12">
+        <div class="carousel-testimony owl-carousel ftco-owl">
+          {% for t in testimonials %}
+          <div class="item">
+            <div class="testimony-wrap text-center pb-5">
+              <div class="user-img mb-4" style="{% if t.avatar %}background-image: url('{{ t.avatar.url }}');{% else %}background-color:#c8a97e;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;{% endif %}">
+                {% if not t.avatar %}{{ t.customer_name|slice:":1" }}{% endif %}
+                <span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text p-3">
+                <p class="mb-4">{{ t.comment }}</p>
+                <p class="name">{{ t.customer_name }}</p>
+                {% if t.rating %}<span class="position">{{ t.rating }} از ۵ ⭐</span>{% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // راه‌اندازی Owl Carousel گالری تصاویر (فقط اگر گالری‌ای وجود داشته باشد)
   jQuery(function($) {
     if ($('.home-slider').length > 0) {
       $('.home-slider').owlCarousel({
-        loop: true,
+        loop: {{ has_multiple_hero_slides|yesno:"true,false" }},
         autoplay: true,
-        margin: 10,
+        margin: 0,
+        animateOut: 'fadeOut',
+        animateIn: 'fadeIn',
+        nav: false,
+        dots: {{ has_multiple_hero_slides|yesno:"true,false" }},
+        items: 1
+      });
+    }
+    if ($('.gallery-carousel').length > 0) {
+      $('.gallery-carousel').owlCarousel({
+        loop: {{ gallery_images|length }} > 1 ? true : false,
+        margin: 15,
         nav: false,
         dots: true,
         items: 1,
+        responsive: { 600: { items: 2 }, 1000: { items: 3 } }
+      });
+    }
+    if ($('.carousel-testimony').length > 0) {
+      $('.carousel-testimony').owlCarousel({
+        center: false,
+        loop: {{ has_multiple_testimonials|yesno:"true,false" }},
+        items: 1,
+        margin: 30,
+        nav: false,
         responsive: { 600: { items: 2 }, 1000: { items: 3 } }
       });
     }
