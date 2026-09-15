@@ -9,8 +9,8 @@ from django.views.generic import CreateView, DeleteView, ListView
 from apps.core.mixins import RestaurantOwnerRequiredMixin
 from apps.menu.models import Category, Product
 
-from .forms import RestaurantImageForm
-from .models import Restaurant, RestaurantImage
+from .forms import HeroSlideForm, RestaurantImageForm, RestaurantStatForm, TestimonialForm
+from .models import HeroSlide, Restaurant, RestaurantImage, RestaurantStat, Testimonial
 from .seo import build_product_json_ld, build_restaurant_json_ld
 from .utils import generate_qr_code_png
 
@@ -90,13 +90,25 @@ def restaurant_public_page(request, slug):
         .order_by('sort_order', 'name')
     )
 
+    hero_slides = HeroSlide.objects.filter(restaurant=restaurant, is_active=True)
+    testimonials = Testimonial.objects.filter(restaurant=restaurant, is_active=True)
+
     context = {
         'restaurant': restaurant,
         'categories': categories,
         # RestaurantImage.objects هم Tenant-Aware است، پس همان استدلال بالا
         # (کاربر anonymous → context خالی) اینجا هم صادق است؛ صراحتاً فیلتر می‌کنیم.
         'gallery_images': RestaurantImage.objects.filter(restaurant=restaurant),
-        'json_ld': build_restaurant_json_ld(request, restaurant, categories),
+        'hero_slides': hero_slides,
+        'has_multiple_hero_slides': hero_slides.count() > 1,
+        'testimonials': testimonials,
+        'has_multiple_testimonials': testimonials.count() > 1,
+        'stats': RestaurantStat.objects.filter(restaurant=restaurant),
+        # آمار «تعداد غذاهای منو» عمداً محاسبه‌شده است، نه یک RestaurantStat
+        # دستی — تا همیشه با واقعیت منو هماهنگ بماند (نگاه کن به کامنت
+        # بالای مدل RestaurantStat در models.py).
+        'product_count': Product.objects.filter(restaurant=restaurant, is_available=True).count(),
+        'json_ld': build_restaurant_json_ld(request, restaurant, categories, testimonials=testimonials),
     }
     return render(request, 'restaurants/public_menu.html', context)
 
@@ -164,4 +176,115 @@ class RestaurantImageDeleteView(RestaurantOwnerRequiredMixin, DeleteView):
 
     def form_valid(self, form):
         messages.success(self.request, 'تصویر حذف شد.')
+        return super().form_valid(form)
+
+
+# -----------------------------------------------------------------------
+# اسلایدر هیرو (HeroSlide)
+# -----------------------------------------------------------------------
+class HeroSlideListView(RestaurantOwnerRequiredMixin, ListView):
+    model = HeroSlide
+    template_name = 'restaurants/hero_slide_list.html'
+    context_object_name = 'slides'
+
+    def get_queryset(self):
+        return HeroSlide.objects.all()
+
+
+class HeroSlideCreateView(RestaurantOwnerRequiredMixin, CreateView):
+    model = HeroSlide
+    form_class = HeroSlideForm
+    template_name = 'restaurants/hero_slide_form.html'
+    success_url = reverse_lazy('hero_slide_list')
+
+    def form_valid(self, form):
+        form.instance.restaurant = self.get_restaurant()
+        messages.success(self.request, 'اسلاید هیرو با موفقیت اضافه شد.')
+        return super().form_valid(form)
+
+
+class HeroSlideDeleteView(RestaurantOwnerRequiredMixin, DeleteView):
+    model = HeroSlide
+    template_name = 'restaurants/hero_slide_confirm_delete.html'
+    success_url = reverse_lazy('hero_slide_list')
+
+    def get_queryset(self):
+        return HeroSlide.objects.all()
+
+    def form_valid(self, form):
+        messages.success(self.request, 'اسلاید حذف شد.')
+        return super().form_valid(form)
+
+
+# -----------------------------------------------------------------------
+# نظرات مشتریان (Testimonial)
+# -----------------------------------------------------------------------
+class TestimonialListView(RestaurantOwnerRequiredMixin, ListView):
+    model = Testimonial
+    template_name = 'restaurants/testimonial_list.html'
+    context_object_name = 'testimonials'
+
+    def get_queryset(self):
+        return Testimonial.objects.all()
+
+
+class TestimonialCreateView(RestaurantOwnerRequiredMixin, CreateView):
+    model = Testimonial
+    form_class = TestimonialForm
+    template_name = 'restaurants/testimonial_form.html'
+    success_url = reverse_lazy('testimonial_list')
+
+    def form_valid(self, form):
+        form.instance.restaurant = self.get_restaurant()
+        messages.success(self.request, 'نظر مشتری با موفقیت اضافه شد.')
+        return super().form_valid(form)
+
+
+class TestimonialDeleteView(RestaurantOwnerRequiredMixin, DeleteView):
+    model = Testimonial
+    template_name = 'restaurants/testimonial_confirm_delete.html'
+    success_url = reverse_lazy('testimonial_list')
+
+    def get_queryset(self):
+        return Testimonial.objects.all()
+
+    def form_valid(self, form):
+        messages.success(self.request, 'نظر حذف شد.')
+        return super().form_valid(form)
+
+
+# -----------------------------------------------------------------------
+# آمار/شمارنده صفحه اصلی (RestaurantStat)
+# -----------------------------------------------------------------------
+class RestaurantStatListView(RestaurantOwnerRequiredMixin, ListView):
+    model = RestaurantStat
+    template_name = 'restaurants/stat_list.html'
+    context_object_name = 'stats'
+
+    def get_queryset(self):
+        return RestaurantStat.objects.all()
+
+
+class RestaurantStatCreateView(RestaurantOwnerRequiredMixin, CreateView):
+    model = RestaurantStat
+    form_class = RestaurantStatForm
+    template_name = 'restaurants/stat_form.html'
+    success_url = reverse_lazy('stat_list')
+
+    def form_valid(self, form):
+        form.instance.restaurant = self.get_restaurant()
+        messages.success(self.request, 'آمار جدید اضافه شد.')
+        return super().form_valid(form)
+
+
+class RestaurantStatDeleteView(RestaurantOwnerRequiredMixin, DeleteView):
+    model = RestaurantStat
+    template_name = 'restaurants/stat_confirm_delete.html'
+    success_url = reverse_lazy('stat_list')
+
+    def get_queryset(self):
+        return RestaurantStat.objects.all()
+
+    def form_valid(self, form):
+        messages.success(self.request, 'آمار حذف شد.')
         return super().form_valid(form)
