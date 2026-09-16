@@ -72,7 +72,6 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # قالب‌های سراسری پروژه (نه مخصوص یک اپ) اینجا قرار می‌گیرند.
         'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
