@@ -200,3 +200,86 @@ class HeroSlide(TenantModel):
         # ابعاد بزرگ‌تر از بقیه‌ی تصاویر چون این عکس تمام‌عرض/تمام‌صفحه نمایش داده می‌شود.
         optimize_image_field(self.image, max_width=1920, max_height=1080)
         super().save(*args, **kwargs)
+
+
+class TeamMember(TenantModel):
+    """
+    عضو تیم/آشپز (بخش «Our Master Chef» تمپلیت).
+
+    برخلاف تمپلیت اصلی که این افراد و عکس‌هایشان کاملاً دمو بودند، هر رستوران
+    اعضای واقعی تیم خودش (سرآشپز، مدیر رستوران و ...) را از پنل مدیریت وارد می‌کند.
+    """
+
+    name = models.CharField(max_length=100)
+    position = models.CharField(max_length=100, help_text='مثلاً «سرآشپز» یا «مدیر رستوران»')
+    photo = models.ImageField(upload_to='restaurants/team/', blank=True, null=True)
+    instagram = models.CharField(max_length=100, blank=True)
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['sort_order', 'created_at']
+
+    def __str__(self):
+        return f'{self.name} ({self.position}) — {self.restaurant.name}'
+
+    def save(self, *args, **kwargs):
+        optimize_image_field(self.photo, max_width=500, max_height=500)
+        super().save(*args, **kwargs)
+
+
+class Reservation(TenantModel):
+    """
+    درخواست رزرو میز (بخش «Make Reservation» تمپلیت).
+
+    برخلاف فرم دمو تمپلیت که هیچ‌کجا ذخیره نمی‌شد (action="#")، این فرم
+    واقعاً در دیتابیس ذخیره می‌شود و صاحب رستوران آن را در پنل مدیریت
+    (`/reservations/`) به‌عنوان یک درخواست ورودی می‌بیند و وضعیتش را
+    مدیریت می‌کند. پرداخت/تأیید خودکار در این مرحله نیست — فقط ثبت درخواست.
+    """
+
+    class Status(models.TextChoices):
+        PENDING = 'pending', 'در انتظار بررسی'
+        CONFIRMED = 'confirmed', 'تأیید شده'
+        CANCELLED = 'cancelled', 'لغو شده'
+
+    customer_name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField(blank=True)
+    party_size = models.PositiveSmallIntegerField(default=2)
+    reservation_date = models.DateField()
+    reservation_time = models.TimeField()
+    note = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+
+    class Meta:
+        ordering = ['-reservation_date', '-reservation_time']
+
+    def __str__(self):
+        return f'{self.customer_name} — {self.reservation_date} ({self.restaurant.name})'
+
+
+class BlogPost(TenantModel):
+    """
+    پست وبلاگ (بخش «Recent Posts» تمپلیت).
+
+    نسخه‌ی حداقلی و واقعی: عنوان + عکس + متن. بدون سیستم نظرات یا
+    دسته‌بندی وبلاگ — اگر در آینده نیاز واقعی به یک وبلاگ کامل‌تر بود،
+    می‌تواند به‌عنوان یک فاز مجزا گسترش یابد.
+    """
+
+    title = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='restaurants/blog/', blank=True, null=True)
+    content = models.TextField()
+    is_published = models.BooleanField(default=True)
+    published_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-published_at']
+
+    def __str__(self):
+        return f'{self.title} — {self.restaurant.name}'
+
+    def save(self, *args, **kwargs):
+        optimize_image_field(self.image, max_width=1000, max_height=700)
+        super().save(*args, **kwargs)
