@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}وبلاگ{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <div class="top-bar">
+        <h1>پست‌های وبلاگ</h1>
+        <a class="btn" href="{% url 'blog_add' %}">+ پست جدید</a>
+    </div>
+
+    {% if posts %}
+    <table>
+        <thead>
+            <tr><th>عنوان</th><th>تاریخ</th><th>وضعیت</th><th>عملیات</th></tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+            <tr>
+                <td>{{ post.title }}</td>
+                <td>{{ post.published_at|date:'Y-m-d' }}</td>
+                <td>
+                    {% if post.is_published %}<span class="badge badge-active">منتشرشده</span>{% else %}<span class="badge badge-inactive">پیش‌نویس</span>{% endif %}
+                </td>
+                <td class="actions"><a class="delete-link" href="{% url 'blog_delete' post.pk %}">حذف</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="muted">هنوز پستی ننوشته‌اید.</p>
+    {% endif %}
+</div>
+{% endblock %}

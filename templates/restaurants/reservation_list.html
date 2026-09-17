@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}رزروهای میز{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <h1>درخواست‌های رزرو میز</h1>
+
+    {% if reservations %}
+    <table>
+        <thead>
+            <tr><th>مشتری</th><th>تلفن</th><th>تاریخ</th><th>ساعت</th><th>تعداد نفر</th><th>وضعیت</th><th>عملیات</th></tr>
+        </thead>
+        <tbody>
+            {% for r in reservations %}
+            <tr>
+                <td>{{ r.customer_name }}</td>
+                <td><a href="tel:{{ r.phone_number }}">{{ r.phone_number }}</a></td>
+                <td>{{ r.reservation_date }}</td>
+                <td>{{ r.reservation_time }}</td>
+                <td>{{ r.party_size }}</td>
+                <td>{{ r.get_status_display }}</td>
+                <td class="actions"><a href="{% url 'reservation_status' r.pk %}">تغییر وضعیت</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="muted">هنوز درخواست رزروی ثبت نشده.</p>
+    {% endif %}
+</div>
+{% endblock %}

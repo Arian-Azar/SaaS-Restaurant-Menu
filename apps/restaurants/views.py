@@ -4,13 +4,30 @@ from django.db.models import Prefetch
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from apps.core.mixins import RestaurantOwnerRequiredMixin
 from apps.menu.models import Category, Product
 
-from .forms import HeroSlideForm, RestaurantImageForm, RestaurantStatForm, TestimonialForm
-from .models import HeroSlide, Restaurant, RestaurantImage, RestaurantStat, Testimonial
+from .forms import (
+    BlogPostForm,
+    HeroSlideForm,
+    ReservationForm,
+    RestaurantImageForm,
+    RestaurantStatForm,
+    TeamMemberForm,
+    TestimonialForm,
+)
+from .models import (
+    BlogPost,
+    HeroSlide,
+    Reservation,
+    Restaurant,
+    RestaurantImage,
+    RestaurantStat,
+    TeamMember,
+    Testimonial,
+)
 from .seo import build_product_json_ld, build_restaurant_json_ld
 from .utils import generate_qr_code_png
 
@@ -108,6 +125,12 @@ def restaurant_public_page(request, slug):
         # دستی — تا همیشه با واقعیت منو هماهنگ بماند (نگاه کن به کامنت
         # بالای مدل RestaurantStat در models.py).
         'product_count': Product.objects.filter(restaurant=restaurant, is_available=True).count(),
+        'featured_products': Product.objects.filter(
+            restaurant=restaurant, is_available=True, is_featured=True
+        )[:4],
+        'team_members': TeamMember.objects.filter(restaurant=restaurant, is_active=True),
+        'blog_posts': BlogPost.objects.filter(restaurant=restaurant, is_published=True)[:3],
+        'reservation_form': ReservationForm(),
         'json_ld': build_restaurant_json_ld(request, restaurant, categories, testimonials=testimonials),
     }
     return render(request, 'restaurants/public_menu.html', context)
@@ -288,3 +311,137 @@ class RestaurantStatDeleteView(RestaurantOwnerRequiredMixin, DeleteView):
     def form_valid(self, form):
         messages.success(self.request, 'آمار حذف شد.')
         return super().form_valid(form)
+
+
+# -----------------------------------------------------------------------
+# رزرو میز (Reservation) — فرم عمومی + پنل مدیریت
+# -----------------------------------------------------------------------
+def reservation_create(request, slug):
+    """
+    پردازش فرم عمومی «رزرو میز» که در صفحه اصلی رستوران نمایش داده می‌شود.
+
+    برخلاف فرم دمو تمپلیت (action="#" که هیچ‌جا ذخیره نمی‌شد)، اینجا واقعاً
+    یک رکورد Reservation ساخته می‌شود. کاربر لاگین نیست، پس رستوران باید
+    صراحتاً از اسلاگ URL پیدا و به رزرو متصل شود (نه از context تهی).
+    """
+    restaurant = get_object_or_404(Restaurant, slug=slug, is_active=True)
+
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            reservation = form.save(commit=False)
+            reservation.restaurant = restaurant
+            reservation.save()
+            messages.success(request, 'درخواست رزرو شما ثبت شد؛ رستوران به‌زودی با شما تماس می‌گیرد.')
+        else:
+            messages.error(request, 'ثبت رزرو ناموفق بود؛ لطفاً فیلدها را بررسی کنید.')
+
+    return redirect('public_menu', slug=restaurant.slug)
+
+
+class ReservationListView(RestaurantOwnerRequiredMixin, ListView):
+    """لیست درخواست‌های رزرو ورودی برای صاحب رستوران."""
+
+    model = Reservation
+    template_name = 'restaurants/reservation_list.html'
+    context_object_name = 'reservations'
+
+    def get_queryset(self):
+        return Reservation.objects.all()
+
+
+class ReservationStatusUpdateView(RestaurantOwnerRequiredMixin, UpdateView):
+    """صاحب رستوران فقط وضعیت رزرو را تغییر می‌دهد (تأیید/لغو)، نه کل فرم را."""
+
+    model = Reservation
+    fields = ['status']
+    template_name = 'restaurants/reservation_status_form.html'
+    success_url = reverse_lazy('reservation_list')
+
+    def get_queryset(self):
+        return Reservation.objects.all()
+
+    def form_valid(self, form):
+        messages.success(self.request, 'وضعیت رزرو به‌روزرسانی شد.')
+        return super().form_valid(form)
+
+
+# -----------------------------------------------------------------------
+# تیم/آشپزها (TeamMember)
+# -----------------------------------------------------------------------
+class TeamMemberListView(RestaurantOwnerRequiredMixin, ListView):
+    model = TeamMember
+    template_name = 'restaurants/team_list.html'
+    context_object_name = 'members'
+
+    def get_queryset(self):
+        return TeamMember.objects.all()
+
+
+class TeamMemberCreateView(RestaurantOwnerRequiredMixin, CreateView):
+    model = TeamMember
+    form_class = TeamMemberForm
+    template_name = 'restaurants/team_form.html'
+    success_url = reverse_lazy('team_list')
+
+    def form_valid(self, form):
+        form.instance.restaurant = self.get_restaurant()
+        messages.success(self.request, 'عضو تیم با موفقیت اضافه شد.')
+        return super().form_valid(form)
+
+
+class TeamMemberDeleteView(RestaurantOwnerRequiredMixin, DeleteView):
+    model = TeamMember
+    template_name = 'restaurants/team_confirm_delete.html'
+    success_url = reverse_lazy('team_list')
+
+    def get_queryset(self):
+        return TeamMember.objects.all()
+
+    def form_valid(self, form):
+        messages.success(self.request, 'عضو تیم حذف شد.')
+        return super().form_valid(form)
+
+
+# -----------------------------------------------------------------------
+# وبلاگ (BlogPost)
+# -----------------------------------------------------------------------
+class BlogPostListView(RestaurantOwnerRequiredMixin, ListView):
+    model = BlogPost
+    template_name = 'restaurants/blog_list.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return BlogPost.objects.all()
+
+
+class BlogPostCreateView(RestaurantOwnerRequiredMixin, CreateView):
+    model = BlogPost
+    form_class = BlogPostForm
+    template_name = 'restaurants/blog_form.html'
+    success_url = reverse_lazy('blog_list')
+
+    def form_valid(self, form):
+        form.instance.restaurant = self.get_restaurant()
+        messages.success(self.request, 'پست وبلاگ با موفقیت اضافه شد.')
+        return super().form_valid(form)
+
+
+class BlogPostDeleteView(RestaurantOwnerRequiredMixin, DeleteView):
+    model = BlogPost
+    template_name = 'restaurants/blog_confirm_delete.html'
+    success_url = reverse_lazy('blog_list')
+
+    def get_queryset(self):
+        return BlogPost.objects.all()
+
+    def form_valid(self, form):
+        messages.success(self.request, 'پست حذف شد.')
+        return super().form_valid(form)
+
+
+def blog_post_detail_public(request, slug, pk):
+    """صفحه‌ی عمومی یک پست وبلاگ — مشابه product_detail_public، بدون نیاز به لاگین."""
+    restaurant = get_object_or_404(Restaurant, slug=slug, is_active=True)
+    post = get_object_or_404(BlogPost, pk=pk, restaurant=restaurant, is_published=True)
+    return render(request, 'restaurants/blog_detail.html', {'restaurant': restaurant, 'post': post})

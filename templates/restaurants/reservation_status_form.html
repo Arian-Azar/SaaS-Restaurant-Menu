@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}تغییر وضعیت رزرو{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>تغییر وضعیت رزرو {{ object.customer_name }}</h1>
+    <p class="muted">{{ object.reservation_date }} — {{ object.reservation_time }} — {{ object.party_size }} نفر</p>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+        {% endfor %}
+        <button type="submit">ذخیره</button>
+        <a class="btn" style="background:#6b7280;" href="{% url 'reservation_list' %}">انصراف</a>
+    </form>
+</div>
+{% endblock %}

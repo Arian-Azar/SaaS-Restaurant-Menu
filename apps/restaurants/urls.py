@@ -22,10 +22,23 @@ urlpatterns = [
     path('stats/add/', views.RestaurantStatCreateView.as_view(), name='stat_add'),
     path('stats/<int:pk>/delete/', views.RestaurantStatDeleteView.as_view(), name='stat_delete'),
 
+    path('reservations/', views.ReservationListView.as_view(), name='reservation_list'),
+    path('reservations/<int:pk>/status/', views.ReservationStatusUpdateView.as_view(), name='reservation_status'),
+
+    path('team/', views.TeamMemberListView.as_view(), name='team_list'),
+    path('team/add/', views.TeamMemberCreateView.as_view(), name='team_add'),
+    path('team/<int:pk>/delete/', views.TeamMemberDeleteView.as_view(), name='team_delete'),
+
+    path('blog/', views.BlogPostListView.as_view(), name='blog_list'),
+    path('blog/add/', views.BlogPostCreateView.as_view(), name='blog_add'),
+    path('blog/<int:pk>/delete/', views.BlogPostDeleteView.as_view(), name='blog_delete'),
+
     # صفحه‌ی جزئیات محصول (فاز ۲ / بخش ۲) — چون دو بخشی است (اسلاگ + pk)،
     # هرگز با الگوی تک‌بخشیِ <str:slug>/ زیرش تداخل نمی‌کند؛ با این حال طبق
     # قرارداد این فایل، همچنان بالاتر از آن نوشته شده تا خوانا بماند.
     path('<str:slug>/products/<int:pk>/', views.product_detail_public, name='product_detail'),
+    path('<str:slug>/blog/<int:pk>/', views.blog_post_detail_public, name='blog_detail'),
+    path('<str:slug>/reserve/', views.reservation_create, name='reservation_create'),
 
     # این باید همیشه آخرین الگو باشد؛ چون <str:slug> هر مسیر یک‌بخشی
     # را می‌گیرد و اگر بالاتر قرار می‌گرفت، مسیرهایی مثل /dashboard/

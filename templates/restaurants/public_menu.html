@@ -1,5 +1,4 @@
 {% extends 'public_base.html' %}
-{% load static %}
 
 {% block title %}{{ restaurant.name }}{% endblock %}
 
@@ -13,279 +12,183 @@
     <script type="application/ld+json">{{ json_ld|safe }}</script>
 {% endblock %}
 
-{% block hero %}
-{# --- اسلایدر هیرو اختصاصی (HeroSlide) --- #}
-<section class="home-slider owl-carousel js-fullheight">
-  {% if hero_slides %}
-    {% for slide in hero_slides %}
-    <div class="slider-item js-fullheight" style="background-image: url('{{ slide.image.url }}');">
-      <div class="overlay"></div>
-      <div class="container">
-        <div class="row slider-text js-fullheight justify-content-center align-items-center" data-scrollax-parent="true">
-          <div class="col-md-12 col-sm-12 text-center ftco-animate">
-            <span class="subheading">{{ slide.subtitle|default:'خوش آمدید' }}</span>
-            <h1 class="mb-4">{{ slide.title|default:restaurant.name }}</h1>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  {% else %}
-    <div class="slider-item js-fullheight" style="background-image: url('{% if restaurant.cover_image %}{{ restaurant.cover_image.url }}{% else %}{% static 'menu_theme/images/bg_1.jpg' %}{% endif %}');">
-      <div class="overlay"></div>
-      <div class="container">
-        <div class="row slider-text js-fullheight justify-content-center align-items-center" data-scrollax-parent="true">
-          <div class="col-md-12 col-sm-12 text-center ftco-animate">
-            <span class="subheading">خوش آمدید</span>
-            <h1 class="mb-4">{{ restaurant.name }}</h1>
-          </div>
-        </div>
-      </div>
-    </div>
-  {% endif %}
-</section>
-{% endblock %}
-
 {% block content %}
+<div class="menu-wrapper" id="top">
 
-{% if restaurant.description %}
-<section class="ftco-section ftco-wrap-about">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-7 d-flex">
-        <div class="img img-1 mr-md-2" style="background-image: url('{% if restaurant.cover_image %}{{ restaurant.cover_image.url }}{% else %}{% static 'menu_theme/images/about.jpg' %}{% endif %}');"></div>
-        {% if gallery_images.0 %}
-        <div class="img img-2 ml-md-2" style="background-image: url('{{ gallery_images.0.image.url }}');"></div>
+    {% with first_slide=hero_slides.0 %}
+    <div class="hero" style="background-image:url('{% if first_slide.image %}{{ first_slide.image.url }}{% elif restaurant.cover_image %}{{ restaurant.cover_image.url }}{% endif %}');">
+        <div class="hero-content">
+            <span class="subtitle">{{ first_slide.subtitle|default:'خوش آمدید' }}</span>
+            <h1>{{ first_slide.title|default:restaurant.name }}</h1>
+        </div>
+    </div>
+    {% endwith %}
+
+    <div class="restaurant-header">
+        <h2 style="margin:0 0 4px;font-size:20px;">{{ restaurant.name }}</h2>
+        {% if restaurant.description %}<p class="meta">{{ restaurant.description }}</p>{% endif %}
+        {% if restaurant.address %}
+            <p class="meta">📍 <a href="https://maps.google.com/?q={{ restaurant.address|urlencode }}" target="_blank" rel="noopener">{{ restaurant.address }}</a></p>
         {% endif %}
-      </div>
-      <div class="col-md-5 wrap-about pt-5 pt-md-5 pb-md-3 ftco-animate">
-        <div class="heading-section mb-4 my-5 my-md-0">
-          <span class="subheading">درباره ما</span>
-          <h2 class="mb-4">{{ restaurant.name }}</h2>
-        </div>
-        <p>{{ restaurant.description }}</p>
-        {% if restaurant.phone or restaurant.address %}
-        <p class="time">
-          {% if restaurant.address %}<span>📍 {{ restaurant.address }}</span>{% endif %}
-          {% if restaurant.phone %}<span><a href="tel:{{ restaurant.phone }}">{{ restaurant.phone }}</a></span>{% endif %}
-        </p>
+        {% if restaurant.phone %}
+            <p class="meta">📞 <a href="tel:{{ restaurant.phone }}">{{ restaurant.phone }}</a></p>
         {% endif %}
-      </div>
-    </div>
-  </div>
-</section>
-{% endif %}
-
-{% if gallery_images %}
-<section class="ftco-section ftco-no-pb bg-light">
-  <div class="container">
-    <div class="row justify-content-center mb-4">
-      <div class="col-md-12 text-center heading-section ftco-animate">
-        <span class="subheading">گالری</span>
-        <h2 class="mb-0">فضای {{ restaurant.name }}</h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="gallery-carousel owl-carousel">
-          {% for img in gallery_images %}
-          <div class="item">
-            <div style="height:220px;background-image:url('{{ img.image.url }}');background-size:cover;background-position:center;border-radius:8px;"></div>
-            {% if img.caption %}<p class="text-center mt-2 mb-0">{{ img.caption }}</p>{% endif %}
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-{% endif %}
-
-{% if stats %}
-<section class="ftco-section ftco-counter img ftco-no-pt" id="section-counter">
-  <div class="container">
-    <div class="row d-md-flex align-items-center justify-content-center">
-      {% for s in stats %}
-      <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 d-flex justify-content-center counter-wrap ftco-animate">
-        <div class="block-18">
-          <div class="text">
-            <strong class="number" data-number="{{ s.number }}">0</strong>
-            <span>{{ s.label }}</span>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-      <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 d-flex justify-content-center counter-wrap ftco-animate">
-        <div class="block-18">
-          <div class="text">
-            <strong class="number" data-number="{{ product_count }}">0</strong>
-            <span>غذای منو</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-{% endif %}
-
-<section class="ftco-section">
-  <div class="container">
-    {% if categories %}
-    <div class="row no-gutters justify-content-center mb-5 pb-2">
-      <div class="col-md-12 text-center heading-section ftco-animate">
-        <span class="subheading">منو</span>
-        <h2 class="mb-4">منوی {{ restaurant.name }}</h2>
-      </div>
+        {% if restaurant.instagram %}
+            <p class="meta">📷 <a href="https://instagram.com/{{ restaurant.instagram }}" target="_blank" rel="noopener">{{ restaurant.instagram }}@</a></p>
+        {% endif %}
     </div>
 
-    <div class="ftco-search">
-      <div class="row">
-        <div class="col-md-12 nav-link-wrap">
-          <div class="nav nav-pills d-flex text-center" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            {% for category in categories %}
-              {% if category.products.all %}
-              <a class="nav-link ftco-animate{% if forloop.first %} active{% endif %}"
-                 id="v-pills-{{ category.id }}-tab" data-toggle="pill"
-                 href="#v-pills-{{ category.id }}" role="tab"
-                 aria-controls="v-pills-{{ category.id }}"
-                 aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
-                {% if category.image %}<img src="{{ category.image.url }}" alt="" style="width:22px;height:22px;object-fit:cover;border-radius:50%;margin-left:6px;vertical-align:middle;">{% endif %}
-                {{ category.name }}
-              </a>
-              {% endif %}
+    {% if featured_products %}
+    <div class="section">
+        <div class="section-title">🔥 غذاهای پیشنهادی</div>
+        <div class="h-scroll">
+            {% for product in featured_products %}
+            <a href="{% url 'product_detail' restaurant.slug product.pk %}" class="h-card" style="text-decoration:none;color:inherit;">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+                {% else %}
+                    <div class="ph-img" style="background:#f4ede4;display:flex;align-items:center;justify-content:center;font-size:24px;">🍽</div>
+                {% endif %}
+                <div class="name">{{ product.name }}</div>
+                <div class="sub">{{ product.final_price }} تومان</div>
+            </a>
             {% endfor %}
-          </div>
         </div>
-
-        <div class="col-md-12 tab-wrap">
-          <div class="tab-content" id="v-pills-tabContent">
-            {% for category in categories %}
-              {% if category.products.all %}
-              <div class="tab-pane fade{% if forloop.first %} show active{% endif %}"
-                   id="v-pills-{{ category.id }}" role="tabpanel"
-                   aria-labelledby="v-pills-{{ category.id }}-tab">
-                <div class="row no-gutters d-flex align-items-stretch">
-                  {% for product in category.products.all %}
-                  <div class="col-md-12 col-lg-6 d-flex align-self-stretch">
-                    <div class="menus d-sm-flex ftco-animate align-items-stretch">
-                      {% if product.image %}
-                      <div class="menu-img img{% if forloop.counter0|divisibleby:2 == False %} order-md-last{% endif %}" style="background-image: url('{{ product.image.url }}');"></div>
-                      {% else %}
-                      <div class="menu-img img{% if forloop.counter0|divisibleby:2 == False %} order-md-last{% endif %}" style="background-color:#f4ede4;display:flex;align-items:center;justify-content:center;color:#c8a97e;font-size:32px;">🍽</div>
-                      {% endif %}
-                      <div class="text d-flex align-items-center">
-                        <div>
-                          <div class="d-flex">
-                            <div class="one-half">
-                              <h3>{{ product.name }}</h3>
-                            </div>
-                            <div class="one-forth">
-                              {% if product.discount_price %}
-                                <span class="price">{{ product.discount_price }} تومان</span>
-                              {% else %}
-                                <span class="price">{{ product.price }} تومان</span>
-                              {% endif %}
-                            </div>
-                          </div>
-                          {% if product.description %}
-                          <p>{{ product.description }}</p>
-                          {% endif %}
-                          <p><a href="{% url 'product_detail' restaurant.slug product.pk %}" class="btn btn-primary">مشاهده جزئیات</a></p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {% endfor %}
-                </div>
-              </div>
-              {% endif %}
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
-    {% else %}
-    <div class="text-center py-5">
-      <p>منوی این رستوران هنوز آماده نشده است.</p>
     </div>
     {% endif %}
-  </div>
-</section>
 
-{% if testimonials %}
-<section class="ftco-section testimony-section img">
-  <div class="overlay"></div>
-  <div class="container">
-    <div class="row justify-content-center mb-5">
-      <div class="col-md-12 text-center heading-section ftco-animate">
-        <span class="subheading">نظرات</span>
-        <h2 class="mb-4">مشتریان راضی</h2>
-      </div>
-    </div>
-    <div class="row ftco-animate justify-content-center">
-      <div class="col-md-12">
-        <div class="carousel-testimony owl-carousel ftco-owl">
-          {% for t in testimonials %}
-          <div class="item">
-            <div class="testimony-wrap text-center pb-5">
-              <div class="user-img mb-4" style="{% if t.avatar %}background-image: url('{{ t.avatar.url }}');{% else %}background-color:#c8a97e;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;{% endif %}">
-                {% if not t.avatar %}{{ t.customer_name|slice:":1" }}{% endif %}
-                <span class="quote d-flex align-items-center justify-content-center">
-                  <i class="icon-quote-left"></i>
-                </span>
-              </div>
-              <div class="text p-3">
-                <p class="mb-4">{{ t.comment }}</p>
-                <p class="name">{{ t.customer_name }}</p>
-                {% if t.rating %}<span class="position">{{ t.rating }} از ۵ ⭐</span>{% endif %}
-              </div>
-            </div>
-          </div>
-          {% endfor %}
+    {% if gallery_images %}
+    <div class="section bg-alt">
+        <div class="section-title">گالری</div>
+        <div class="h-scroll">
+            {% for img in gallery_images %}
+                <img src="{{ img.image.url }}" alt="{{ img.caption|default:restaurant.name }}" loading="lazy">
+            {% endfor %}
         </div>
-      </div>
     </div>
-  </div>
-</section>
-{% endif %}
+    {% endif %}
 
-{% endblock %}
+    {% if stats %}
+    <div class="section">
+        <div class="stats-grid">
+            {% for s in stats %}
+            <div class="stat-box"><strong>{{ s.number }}</strong><span>{{ s.label }}</span></div>
+            {% endfor %}
+            <div class="stat-box"><strong>{{ product_count }}</strong><span>غذای منو</span></div>
+        </div>
+    </div>
+    {% endif %}
 
-{% block extra_js %}
-<script>
-  jQuery(function($) {
-    if ($('.home-slider').length > 0) {
-      $('.home-slider').owlCarousel({
-        loop: {{ has_multiple_hero_slides|yesno:"true,false" }},
-        autoplay: true,
-        margin: 0,
-        animateOut: 'fadeOut',
-        animateIn: 'fadeIn',
-        nav: false,
-        dots: {{ has_multiple_hero_slides|yesno:"true,false" }},
-        items: 1
-      });
-    }
-    if ($('.gallery-carousel').length > 0) {
-      $('.gallery-carousel').owlCarousel({
-        loop: {{ gallery_images|length }} > 1 ? true : false,
-        margin: 15,
-        nav: false,
-        dots: true,
-        items: 1,
-        responsive: { 600: { items: 2 }, 1000: { items: 3 } }
-      });
-    }
-    if ($('.carousel-testimony').length > 0) {
-      $('.carousel-testimony').owlCarousel({
-        center: false,
-        loop: {{ has_multiple_testimonials|yesno:"true,false" }},
-        items: 1,
-        margin: 30,
-        nav: false,
-        responsive: { 600: { items: 2 }, 1000: { items: 3 } }
-      });
-    }
-  });
-</script>
+    {% if categories %}
+        {% if categories|length > 1 %}
+        <nav class="category-nav">
+            {% for category in categories %}
+                {% if category.products.all %}
+                    <a href="#cat-{{ category.id }}">{{ category.name }}</a>
+                {% endif %}
+            {% endfor %}
+        </nav>
+        {% endif %}
+
+        {% for category in categories %}
+            {% if category.products.all %}
+            <div class="category-block" id="cat-{{ category.id }}">
+                <div class="section-title">{{ category.name }}</div>
+                {% for product in category.products.all %}
+                <a href="{% url 'product_detail' restaurant.slug product.pk %}" class="product-card">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb" loading="lazy">
+                    {% endif %}
+                    <div style="flex:1;">
+                        <div class="product-name">{{ product.name }}</div>
+                        {% if product.description %}
+                            <div class="product-desc">{{ product.description|truncatewords:12 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-price">
+                        {% if product.discount_price %}
+                            <span class="original">{{ product.price }}</span>{{ product.discount_price }} تومان
+                        {% else %}
+                            {{ product.price }} تومان
+                        {% endif %}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">منوی این رستوران هنوز آماده نشده است.</div>
+    {% endif %}
+
+    {% if team_members %}
+    <div class="section bg-alt">
+        <div class="section-title">تیم ما</div>
+        <div class="h-scroll">
+            {% for member in team_members %}
+            <div class="h-card team-card">
+                {% if member.photo %}
+                    <img src="{{ member.photo.url }}" alt="{{ member.name }}" loading="lazy">
+                {% else %}
+                    <div class="ph-img" style="border-radius:50%;width:90px;height:90px;background:#f4ede4;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto;">👤</div>
+                {% endif %}
+                <div class="name">{{ member.name }}</div>
+                <div class="sub">{{ member.position }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <div class="section-title">📅 رزرو میز</div>
+        <form method="post" action="{% url 'reservation_create' restaurant.slug %}" class="reserve-form">
+            {% csrf_token %}
+            <label>نام و نام‌خانوادگی</label>
+            {{ reservation_form.customer_name }}
+            <label>شماره تماس</label>
+            {{ reservation_form.phone_number }}
+            <label>ایمیل (اختیاری)</label>
+            {{ reservation_form.email }}
+            <label>تعداد نفرات</label>
+            {{ reservation_form.party_size }}
+            <label>تاریخ</label>
+            {{ reservation_form.reservation_date }}
+            <label>ساعت</label>
+            {{ reservation_form.reservation_time }}
+            <label>توضیحات (اختیاری)</label>
+            {{ reservation_form.note }}
+            <button type="submit" class="btn btn-block">ثبت درخواست رزرو</button>
+        </form>
+    </div>
+
+    {% if testimonials %}
+    <div class="section bg-alt">
+        <div class="section-title">نظرات مشتریان</div>
+        {% for t in testimonials %}
+        <div class="testimonial-card">
+            {% if t.rating %}<div class="stars">{% for _ in ''|center:t.rating %}⭐{% endfor %}</div>{% endif %}
+            <p style="margin:6px 0;">{{ t.comment }}</p>
+            <div class="name">{{ t.customer_name }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if blog_posts %}
+    <div class="section">
+        <div class="section-title">وبلاگ</div>
+        {% for post in blog_posts %}
+        <a href="{% url 'blog_detail' restaurant.slug post.pk %}" class="blog-card">
+            {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">{% endif %}
+            <div class="title">{{ post.title }}</div>
+            <div class="date">{{ post.published_at|date:'Y/m/d' }}</div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+
+<a href="#top" class="back-to-top" aria-label="بازگشت به بالا">↑</a>
 {% endblock %}

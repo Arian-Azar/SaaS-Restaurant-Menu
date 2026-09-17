@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}تیم رستوران{% endblock %}
+{% block content %}
+<div class="wide-container">
+    <div class="top-bar">
+        <h1>تیم / آشپزها</h1>
+        <a class="btn" href="{% url 'team_add' %}">+ افزودن عضو</a>
+    </div>
+
+    {% if members %}
+    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;">
+        {% for m in members %}
+        <div style="width:160px;">
+            {% if m.photo %}
+            <img src="{{ m.photo.url }}" alt="{{ m.name }}" style="width:160px;height:160px;object-fit:cover;border-radius:8px;">
+            {% endif %}
+            <p style="margin:6px 0 0;font-weight:600;">{{ m.name }}</p>
+            <p class="muted" style="margin:0;font-size:13px;">{{ m.position }}</p>
+            <a class="delete-link" style="font-size:13px;" href="{% url 'team_delete' m.pk %}">حذف</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">هنوز عضوی اضافه نکرده‌اید.</p>
+    {% endif %}
+</div>
+{% endblock %}
