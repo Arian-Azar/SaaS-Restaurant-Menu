@@ -68,6 +68,10 @@ class Product(TenantModel):
         default=True,
         help_text='اگر غیرفعال شود، محصول در منوی عمومی نمایش داده نمی‌شود (مثلاً تمام‌شده).',
     )
+    is_featured = models.BooleanField(
+        default=False,
+        help_text='اگر فعال باشد، این محصول در بخش «غذاهای پیشنهادی» بالای صفحه اصلی نمایش داده می‌شود.',
+    )
     sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
