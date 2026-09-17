@@ -29,10 +29,12 @@ from PIL import Image, ImageDraw
 
 from apps.menu.models import Category, Product
 from apps.restaurants.models import (
+    BlogPost,
     HeroSlide,
     Restaurant,
     RestaurantImage,
     RestaurantStat,
+    TeamMember,
     Testimonial,
 )
 
@@ -126,22 +128,24 @@ class Command(BaseCommand):
             )
 
         # --- منو: دسته‌بندی و محصولات ---
+        # آیتم چهارم تاپل یعنی discount_price، پنجمی یعنی is_featured
+        # (برای بخش «غذاهای پیشنهادی» صفحه اصلی).
         menu_plan = {
             'پیش‌غذا': [
-                ('سالاد سزار', 'کاهو، مرغ گریل‌شده، سس مخصوص و پارمزان', 145000, None),
-                ('سوپ جو', 'سوپ سنتی با جو پرک و سبزیجات تازه', 95000, None),
+                ('سالاد سزار', 'کاهو، مرغ گریل‌شده، سس مخصوص و پارمزان', 145000, None, True),
+                ('سوپ جو', 'سوپ سنتی با جو پرک و سبزیجات تازه', 95000, None, False),
             ],
             'غذای اصلی': [
-                ('چلوکباب کوبیده', 'دو سیخ کباب کوبیده مخصوص با برنج ایرانی', 320000, 280000),
-                ('استیک مرغ گریل', 'سینه مرغ گریل‌شده با سبزیجات بخارپز', 280000, None),
-                ('پیتزا مخصوص آرامیس', 'پپرونی، قارچ، فلفل دلمه و پنیر موزارلا', 250000, 220000),
+                ('چلوکباب کوبیده', 'دو سیخ کباب کوبیده مخصوص با برنج ایرانی', 320000, 280000, True),
+                ('استیک مرغ گریل', 'سینه مرغ گریل‌شده با سبزیجات بخارپز', 280000, None, False),
+                ('پیتزا مخصوص آرامیس', 'پپرونی، قارچ، فلفل دلمه و پنیر موزارلا', 250000, 220000, True),
             ],
             'دسر': [
-                ('تیرامیسو', 'دسر ایتالیایی با قهوه و ماسکارپونه', 150000, None),
+                ('تیرامیسو', 'دسر ایتالیایی با قهوه و ماسکارپونه', 150000, None, True),
             ],
             'نوشیدنی': [
-                ('اسپرسو', 'قهوه غلیظ ایتالیایی', 90000, None),
-                ('آب‌میوه طبیعی', 'پرتقال یا هویج تازه', 85000, None),
+                ('اسپرسو', 'قهوه غلیظ ایتالیایی', 90000, None, False),
+                ('آب‌میوه طبیعی', 'پرتقال یا هویج تازه', 85000, None, False),
             ],
         }
 
@@ -159,7 +163,7 @@ class Command(BaseCommand):
                 sort_order=cat_index,
                 is_active=True,
             )
-            for prod_index, (name, desc, price, discount) in enumerate(products):
+            for prod_index, (name, desc, price, discount, featured) in enumerate(products):
                 Product.objects.create(
                     restaurant=restaurant,
                     category=category,
@@ -169,6 +173,7 @@ class Command(BaseCommand):
                     discount_price=discount,
                     image=make_placeholder_image(name[:12], product_colors[color_index % len(product_colors)]),
                     is_available=True,
+                    is_featured=featured,
                     sort_order=prod_index,
                 )
                 color_index += 1
@@ -192,6 +197,36 @@ class Command(BaseCommand):
                 rating=rating,
                 is_active=True,
                 sort_order=i,
+            )
+
+        # --- تیم / آشپزها ---
+        team_data = [
+            ('رضا احمدی', 'سرآشپز', (110, 80, 60)),
+            ('نگار حسینی', 'مدیر رستوران', (90, 100, 120)),
+            ('کیان مرادی', 'دستیار آشپز', (100, 70, 90)),
+        ]
+        for i, (name, position, color) in enumerate(team_data):
+            TeamMember.objects.create(
+                restaurant=restaurant,
+                name=name,
+                position=position,
+                photo=make_placeholder_image(f'TEAM {i + 1}', color),
+                is_active=True,
+                sort_order=i,
+            )
+
+        # --- وبلاگ ---
+        blog_data = [
+            ('راز طعم کباب کوبیده خانگی', 'کباب کوبیده خوب با نسبت درست گوشت و پیاز و کمی صبر روی زغال به دست می‌آید...'),
+            ('چرا صبحانه ایرانی بهترین شروع روز است', 'صبحانه‌ی سنتی ایرانی با نان تازه، پنیر و گردو، انرژی روز شما را تأمین می‌کند...'),
+        ]
+        for i, (title, content) in enumerate(blog_data):
+            BlogPost.objects.create(
+                restaurant=restaurant,
+                title=title,
+                content=content,
+                image=make_placeholder_image(f'BLOG {i + 1}', (80, 90, 70)),
+                is_published=True,
             )
 
         self.stdout.write(self.style.SUCCESS('✅ داده‌ی نمونه با موفقیت ساخته شد.'))
