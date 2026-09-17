@@ -14,7 +14,7 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = [
             'category', 'name', 'description', 'price',
-            'discount_price', 'image', 'is_available', 'sort_order',
+            'discount_price', 'image', 'is_available', 'is_featured', 'sort_order',
         ]
 
     def __init__(self, *args, **kwargs):
