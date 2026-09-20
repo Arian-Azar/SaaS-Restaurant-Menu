@@ -1,4 +1,5 @@
 {% extends 'public_base.html' %}
+{% load static %}
 
 {% block title %}{{ restaurant.name }}{% endblock %}
 
@@ -6,189 +7,334 @@
     <meta name="description" content="منوی آنلاین {{ restaurant.name }}{% if restaurant.address %} - {{ restaurant.address }}{% endif %}">
     <meta property="og:title" content="{{ restaurant.name }}">
     <meta property="og:description" content="{{ restaurant.description|truncatewords:20 }}">
-    {% if restaurant.cover_image %}
-        <meta property="og:image" content="{{ restaurant.cover_image.url }}">
-    {% endif %}
+    {% if restaurant.cover_image %}<meta property="og:image" content="{{ restaurant.cover_image.url }}">{% endif %}
     <script type="application/ld+json">{{ json_ld|safe }}</script>
 {% endblock %}
 
 {% block content %}
-<div class="menu-wrapper" id="top">
 
-    {% with first_slide=hero_slides.0 %}
-    <div class="hero" style="background-image:url('{% if first_slide.image %}{{ first_slide.image.url }}{% elif restaurant.cover_image %}{{ restaurant.cover_image.url }}{% endif %}');">
-        <div class="hero-content">
-            <span class="subtitle">{{ first_slide.subtitle|default:'خوش آمدید' }}</span>
-            <h1>{{ first_slide.title|default:restaurant.name }}</h1>
+{% with first_slide=hero_slides.0 %}
+<section id="hero" class="hero section dark-background">
+  <img src="{% if first_slide.image %}{{ first_slide.image.url }}{% elif restaurant.cover_image %}{{ restaurant.cover_image.url }}{% else %}{% static 'restaurantly/img/hero-bg.jpg' %}{% endif %}" alt="" data-aos="fade-in">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 d-flex flex-column align-items-center align-items-lg-start">
+        <h2 data-aos="fade-up" data-aos-delay="100">{{ first_slide.title|default:restaurant.name }}</h2>
+        <p data-aos="fade-up" data-aos-delay="200">{{ first_slide.subtitle|default:restaurant.description|default:'خوش آمدید' }}</p>
+        <div class="d-flex mt-4" data-aos="fade-up" data-aos-delay="300">
+          <a href="#menu" class="cta-btn">منوی ما</a>
+          <a href="#book-a-table" class="cta-btn">رزرو میز</a>
         </div>
+      </div>
     </div>
-    {% endwith %}
+  </div>
+</section>
+{% endwith %}
 
-    <div class="restaurant-header">
-        <h2 style="margin:0 0 4px;font-size:20px;">{{ restaurant.name }}</h2>
-        {% if restaurant.description %}<p class="meta">{{ restaurant.description }}</p>{% endif %}
-        {% if restaurant.address %}
-            <p class="meta">📍 <a href="https://maps.google.com/?q={{ restaurant.address|urlencode }}" target="_blank" rel="noopener">{{ restaurant.address }}</a></p>
+{% if restaurant.description %}
+<section id="about" class="about section">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row gy-4">
+      <div class="col-lg-6 order-1 order-lg-2">
+        <img src="{% if restaurant.cover_image %}{{ restaurant.cover_image.url }}{% elif gallery_images.0 %}{{ gallery_images.0.image.url }}{% else %}{% static 'restaurantly/img/about.jpg' %}{% endif %}" class="img-fluid about-img" alt="">
+      </div>
+      <div class="col-lg-6 order-2 order-lg-1 content">
+        <h3>درباره {{ restaurant.name }}</h3>
+        <p>{{ restaurant.description }}</p>
+        {% if restaurant.address or restaurant.phone %}
+        <ul>
+          {% if restaurant.address %}<li><i class="bi bi-geo-alt"></i> <span>{{ restaurant.address }}</span></li>{% endif %}
+          {% if restaurant.phone %}<li><i class="bi bi-telephone"></i> <span>{{ restaurant.phone }}</span></li>{% endif %}
+        </ul>
         {% endif %}
-        {% if restaurant.phone %}
-            <p class="meta">📞 <a href="tel:{{ restaurant.phone }}">{{ restaurant.phone }}</a></p>
-        {% endif %}
-        {% if restaurant.instagram %}
-            <p class="meta">📷 <a href="https://instagram.com/{{ restaurant.instagram }}" target="_blank" rel="noopener">{{ restaurant.instagram }}@</a></p>
-        {% endif %}
+      </div>
     </div>
+  </div>
+</section>
+{% endif %}
 
-    {% if featured_products %}
-    <div class="section">
-        <div class="section-title">🔥 غذاهای پیشنهادی</div>
-        <div class="h-scroll">
-            {% for product in featured_products %}
-            <a href="{% url 'product_detail' restaurant.slug product.pk %}" class="h-card" style="text-decoration:none;color:inherit;">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
-                {% else %}
-                    <div class="ph-img" style="background:#f4ede4;display:flex;align-items:center;justify-content:center;font-size:24px;">🍽</div>
-                {% endif %}
-                <div class="name">{{ product.name }}</div>
-                <div class="sub">{{ product.final_price }} تومان</div>
-            </a>
-            {% endfor %}
+<section id="why-us" class="why-us section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>چرا ما</h2>
+    <p>چرا {{ restaurant.name }} را انتخاب کنید</p>
+  </div>
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-item">
+          <span>۰۱</span>
+          <h4>مواد اولیه تازه</h4>
+          <p>تمام غذاها با مواد اولیه‌ی تازه و باکیفیت، همان‌روز تهیه می‌شوند.</p>
         </div>
-    </div>
-    {% endif %}
-
-    {% if gallery_images %}
-    <div class="section bg-alt">
-        <div class="section-title">گالری</div>
-        <div class="h-scroll">
-            {% for img in gallery_images %}
-                <img src="{{ img.image.url }}" alt="{{ img.caption|default:restaurant.name }}" loading="lazy">
-            {% endfor %}
+      </div>
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="card-item">
+          <span>۰۲</span>
+          <h4>خدمات سریع</h4>
+          <p>سفارش شما با سرعت و دقت توسط تیم مجرب ما آماده و سرو می‌شود.</p>
         </div>
-    </div>
-    {% endif %}
-
-    {% if stats %}
-    <div class="section">
-        <div class="stats-grid">
-            {% for s in stats %}
-            <div class="stat-box"><strong>{{ s.number }}</strong><span>{{ s.label }}</span></div>
-            {% endfor %}
-            <div class="stat-box"><strong>{{ product_count }}</strong><span>غذای منو</span></div>
+      </div>
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="card-item">
+          <span>۰۳</span>
+          <h4>فضایی دنج</h4>
+          <p>محیطی آرام و دلنشین برای گذراندن وقت با خانواده و دوستان.</p>
         </div>
+      </div>
     </div>
-    {% endif %}
+  </div>
+</section>
 
-    {% if categories %}
-        {% if categories|length > 1 %}
-        <nav class="category-nav">
-            {% for category in categories %}
-                {% if category.products.all %}
-                    <a href="#cat-{{ category.id }}">{{ category.name }}</a>
-                {% endif %}
-            {% endfor %}
-        </nav>
-        {% endif %}
+<section id="menu" class="menu section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>منو</h2>
+    <p>منوی {{ restaurant.name }} را ببینید</p>
+  </div>
 
-        {% for category in categories %}
+  {% if categories %}
+  <div class="container isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+    <div class="row" data-aos="fade-up" data-aos-delay="100">
+      <div class="col-lg-12 d-flex justify-content-center">
+        <ul class="menu-filters isotope-filters">
+          <li data-filter="*" class="filter-active">همه</li>
+          {% for category in categories %}
             {% if category.products.all %}
-            <div class="category-block" id="cat-{{ category.id }}">
-                <div class="section-title">{{ category.name }}</div>
-                {% for product in category.products.all %}
-                <a href="{% url 'product_detail' restaurant.slug product.pk %}" class="product-card">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb" loading="lazy">
-                    {% endif %}
-                    <div style="flex:1;">
-                        <div class="product-name">{{ product.name }}</div>
-                        {% if product.description %}
-                            <div class="product-desc">{{ product.description|truncatewords:12 }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="product-price">
-                        {% if product.discount_price %}
-                            <span class="original">{{ product.price }}</span>{{ product.discount_price }} تومان
-                        {% else %}
-                            {{ product.price }} تومان
-                        {% endif %}
-                    </div>
-                </a>
-                {% endfor %}
+            <li data-filter=".filter-cat-{{ category.id }}">{{ category.name }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="row isotope-container" data-aos="fade-up" data-aos-delay="200">
+      {% for category in categories %}
+        {% for product in category.products.all %}
+        <div class="col-lg-6 menu-item isotope-item filter-cat-{{ category.id }}">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" class="menu-img" alt="{{ product.name }}">
+          {% endif %}
+          <div class="menu-content">
+            <a href="{% url 'product_detail' restaurant.slug product.pk %}">
+              {% if product.is_featured %}<i class="bi bi-star-fill" style="font-size:12px;color:var(--accent-color);"></i>{% endif %}
+              {{ product.name }}
+            </a>
+            {% if product.discount_price %}
+              <span><del style="opacity:.5;font-size:12px;">{{ product.price }}</del> {{ product.discount_price }} تومان</span>
+            {% else %}
+              <span>{{ product.price }} تومان</span>
+            {% endif %}
+          </div>
+          {% if product.description %}
+          <div class="menu-ingredients">{{ product.description|truncatewords:14 }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
+  <div class="container text-center"><p>منوی این رستوران هنوز آماده نشده است.</p></div>
+  {% endif %}
+</section>
+
+<section id="services" class="why-us section" style="background-color: color-mix(in srgb, var(--background-color) 95%, black 5%);">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>خدمات</h2>
+    <p>خدمات پذیرایی</p>
+  </div>
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-item"><span><i class="bi bi-balloon-heart"></i></span><h4>جشن تولد</h4><p>پذیرایی اختصاصی برای جشن تولد شما، با هماهنگی قبلی.</p></div>
+      </div>
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="card-item"><span><i class="bi bi-briefcase"></i></span><h4>جلسات کاری</h4><p>فضای مناسب و منوی ویژه برای میزبانی رویدادهای کاری.</p></div>
+      </div>
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="card-item"><span><i class="bi bi-gem"></i></span><h4>مراسم عروسی</h4><p>پذیرایی و منوی سفارشی برای مراسم عروسی و جشن‌های بزرگ.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="book-a-table" class="book-a-table section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>رزرو میز</h2>
+    <p>یک میز رزرو کنید</p>
+  </div>
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <form action="{% url 'reservation_create' restaurant.slug %}" method="post">
+      {% csrf_token %}
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6">{{ reservation_form.customer_name }}</div>
+        <div class="col-lg-4 col-md-6">{{ reservation_form.phone_number }}</div>
+        <div class="col-lg-4 col-md-6">{{ reservation_form.email }}</div>
+        <div class="col-lg-4 col-md-6">{{ reservation_form.reservation_date }}</div>
+        <div class="col-lg-4 col-md-6">{{ reservation_form.reservation_time }}</div>
+        <div class="col-lg-4 col-md-6">{{ reservation_form.party_size }}</div>
+      </div>
+      <div class="form-group mt-3">{{ reservation_form.note }}</div>
+      <div class="text-center mt-3">
+        <button type="submit">ثبت درخواست رزرو</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% if testimonials %}
+<section id="testimonials" class="testimonials section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>نظرات</h2>
+    <p>نظر مشتریان ما درباره‌ی {{ restaurant.name }}</p>
+  </div>
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="swiper init-swiper">
+      <script type="application/json" class="swiper-config">
+        {
+          "loop": true, "speed": 600, "autoplay": {"delay": 5000},
+          "slidesPerView": "auto",
+          "pagination": {"el": ".swiper-pagination", "type": "bullets", "clickable": true},
+          "breakpoints": {"320": {"slidesPerView": 1, "spaceBetween": 40}, "1200": {"slidesPerView": 3, "spaceBetween": 20}}
+        }
+      </script>
+      <div class="swiper-wrapper">
+        {% for t in testimonials %}
+        <div class="swiper-slide">
+          <div class="testimonial-item">
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              <span>{{ t.comment }}</span>
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+            {% if t.avatar %}<img src="{{ t.avatar.url }}" class="testimonial-img" alt="{{ t.customer_name }}">{% endif %}
+            <h3>{{ t.customer_name }}</h3>
+            {% if t.rating %}<h4>{{ t.rating }} از ۵ ⭐</h4>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if gallery_images %}
+<section id="gallery" class="gallery section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>گالری</h2>
+    <p>تصاویری از {{ restaurant.name }}</p>
+  </div>
+  <div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
+    <div class="row g-0">
+      {% for img in gallery_images %}
+      <div class="col-lg-3 col-md-4">
+        <div class="gallery-item">
+          <a href="{{ img.image.url }}" class="glightbox" data-gallery="images-gallery">
+            <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="img-fluid">
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if team_members %}
+<section id="chefs" class="chefs section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>تیم</h2>
+    <p>تیم {{ restaurant.name }}</p>
+  </div>
+  <div class="container">
+    <div class="row gy-4">
+      {% for member in team_members %}
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="member">
+          {% if member.photo %}
+            <img src="{{ member.photo.url }}" class="img-fluid" alt="{{ member.name }}">
+          {% endif %}
+          <div class="member-info">
+            <div class="member-info-content">
+              <h4>{{ member.name }}</h4>
+              <span>{{ member.position }}</span>
+            </div>
+            {% if member.instagram %}
+            <div class="social">
+              <a href="https://instagram.com/{{ member.instagram }}" target="_blank" rel="noopener"><i class="bi bi-instagram"></i></a>
             </div>
             {% endif %}
-        {% endfor %}
-    {% else %}
-        <div class="empty-state">منوی این رستوران هنوز آماده نشده است.</div>
-    {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
 
-    {% if team_members %}
-    <div class="section bg-alt">
-        <div class="section-title">تیم ما</div>
-        <div class="h-scroll">
-            {% for member in team_members %}
-            <div class="h-card team-card">
-                {% if member.photo %}
-                    <img src="{{ member.photo.url }}" alt="{{ member.name }}" loading="lazy">
-                {% else %}
-                    <div class="ph-img" style="border-radius:50%;width:90px;height:90px;background:#f4ede4;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto;">👤</div>
-                {% endif %}
-                <div class="name">{{ member.name }}</div>
-                <div class="sub">{{ member.position }}</div>
+{% if blog_posts %}
+<section id="blog" class="chefs section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>وبلاگ</h2>
+    <p>آخرین مطالب {{ restaurant.name }}</p>
+  </div>
+  <div class="container">
+    <div class="row gy-4">
+      {% for post in blog_posts %}
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <a href="{% url 'blog_detail' restaurant.slug post.pk %}" class="text-decoration-none">
+          <div class="member">
+            {% if post.image %}<img src="{{ post.image.url }}" class="img-fluid" alt="{{ post.title }}">{% endif %}
+            <div class="member-info">
+              <div class="member-info-content">
+                <h4 style="color:var(--heading-color);">{{ post.title }}</h4>
+                <span>{{ post.published_at|date:'Y/m/d' }}</span>
+              </div>
             </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="section">
-        <div class="section-title">📅 رزرو میز</div>
-        <form method="post" action="{% url 'reservation_create' restaurant.slug %}" class="reserve-form">
-            {% csrf_token %}
-            <label>نام و نام‌خانوادگی</label>
-            {{ reservation_form.customer_name }}
-            <label>شماره تماس</label>
-            {{ reservation_form.phone_number }}
-            <label>ایمیل (اختیاری)</label>
-            {{ reservation_form.email }}
-            <label>تعداد نفرات</label>
-            {{ reservation_form.party_size }}
-            <label>تاریخ</label>
-            {{ reservation_form.reservation_date }}
-            <label>ساعت</label>
-            {{ reservation_form.reservation_time }}
-            <label>توضیحات (اختیاری)</label>
-            {{ reservation_form.note }}
-            <button type="submit" class="btn btn-block">ثبت درخواست رزرو</button>
-        </form>
-    </div>
-
-    {% if testimonials %}
-    <div class="section bg-alt">
-        <div class="section-title">نظرات مشتریان</div>
-        {% for t in testimonials %}
-        <div class="testimonial-card">
-            {% if t.rating %}<div class="stars">{% for _ in ''|center:t.rating %}⭐{% endfor %}</div>{% endif %}
-            <p style="margin:6px 0;">{{ t.comment }}</p>
-            <div class="name">{{ t.customer_name }}</div>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    {% if blog_posts %}
-    <div class="section">
-        <div class="section-title">وبلاگ</div>
-        {% for post in blog_posts %}
-        <a href="{% url 'blog_detail' restaurant.slug post.pk %}" class="blog-card">
-            {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}" loading="lazy">{% endif %}
-            <div class="title">{{ post.title }}</div>
-            <div class="date">{{ post.published_at|date:'Y/m/d' }}</div>
+          </div>
         </a>
-        {% endfor %}
+      </div>
+      {% endfor %}
     </div>
-    {% endif %}
+  </div>
+</section>
+{% endif %}
 
-</div>
+<section id="contact" class="contact section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>تماس</h2>
+    <p>با ما در ارتباط باشید</p>
+  </div>
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row gy-4 justify-content-center">
+      {% if restaurant.address %}
+      <div class="col-lg-4">
+        <div class="info-item d-flex">
+          <i class="bi bi-geo-alt flex-shrink-0"></i>
+          <div><h3>آدرس</h3><p>{{ restaurant.address }}</p></div>
+        </div>
+      </div>
+      {% endif %}
+      {% if restaurant.phone %}
+      <div class="col-lg-4">
+        <div class="info-item d-flex">
+          <i class="bi bi-telephone flex-shrink-0"></i>
+          <div><h3>تلفن</h3><p><a href="tel:{{ restaurant.phone }}">{{ restaurant.phone }}</a></p></div>
+        </div>
+      </div>
+      {% endif %}
+      {% if restaurant.instagram %}
+      <div class="col-lg-4">
+        <div class="info-item d-flex">
+          <i class="bi bi-instagram flex-shrink-0"></i>
+          <div><h3>اینستاگرام</h3><p><a href="https://instagram.com/{{ restaurant.instagram }}" target="_blank" rel="noopener">{{ restaurant.instagram }}@</a></p></div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
 
-<a href="#top" class="back-to-top" aria-label="بازگشت به بالا">↑</a>
 {% endblock %}
