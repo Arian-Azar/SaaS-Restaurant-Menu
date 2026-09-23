@@ -1,0 +1,148 @@
+/*
+ * rtl-overrides.css
+ *
+ * برخلاف پروژه قبلی (Feliciano/Bootstrap 4)، اینجا اکثر کار RTL را خودِ
+ * Bootstrap 5 انجام می‌دهد:
+ *   ۱. یک build رسمی RTL دارد (bootstrap.rtl.min.css) — به‌جای override دستی.
+ *   ۲. کلاس‌های spacing آن منطقی هستند (ms-*/me-* به‌جای ml-*/mr-*) و با
+ *      dir="rtl" خودکار درست می‌شوند.
+ *
+ * این فایل فقط همان تعداد کم (~۲۰) قانون در خودِ main.css (نه Bootstrap)
+ * را override می‌کند که از پراپرتی‌های فیزیکی (left/right صریح، نه منطقی)
+ * استفاده کرده‌اند — عمداً به‌جای یک sweep عمومی، هرکدام را جداگانه و آگاهانه
+ * (بعد از خواندن main.css) نوشته‌ایم تا هیچ چیز به‌اشتباه mirror نشود.
+ *
+ * باید آخرین <link> بعد از main.css باشد.
+ */
+
+/* آیکون کنار متن در نوار بالای سایت (تلفن/ایمیل) */
+.header .topbar .contact-info i a,
+.header .topbar .contact-info i span {
+  padding-left: 0;
+  padding-right: 5px;
+}
+
+/* جداکننده‌ی زبان‌ها در نوار بالا */
+.header .topbar .languages ul li+li {
+  padding-left: 0;
+  padding-right: 10px;
+}
+.header .topbar .languages ul li+li::before {
+  padding-right: 0;
+  padding-left: 10px;
+}
+
+/* فاصله‌ی لوگو از منو */
+.header .logo img {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+/* آیکون کنار لینک‌های منو (اگر باشد) */
+.navmenu a i,
+.navmenu a:focus i {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+/* دراپ‌داون دسکتاپ منو */
+@media (min-width: 1200px) {
+  .navmenu .dropdown ul {
+    left: auto;
+    right: 14px;
+  }
+  .navmenu .dropdown .dropdown ul {
+    left: auto;
+    right: -90%;
+  }
+  .navmenu .dropdown .dropdown:hover>ul {
+    left: auto;
+    right: -100%;
+  }
+}
+
+/* دکمه همبرگر موبایل */
+@media (max-width: 1199px) {
+  .mobile-nav-toggle {
+    margin-right: 0;
+    margin-left: 10px;
+  }
+  .mobile-nav-active .mobile-nav-toggle {
+    right: auto;
+    left: 15px;
+    margin-right: 0;
+  }
+}
+
+/* دکمه بازگشت به بالا — سمت چپ در RTL */
+.scroll-top {
+  right: auto;
+  left: 15px;
+}
+
+/* breadcrumb صفحات داخلی */
+.page-title .breadcrumbs ol li+li {
+  padding-left: 0;
+  padding-right: 10px;
+}
+.page-title .breadcrumbs ol li+li::before {
+  padding-right: 0;
+  padding-left: 10px;
+}
+
+/* دکمه‌های CTA هیرو */
+.hero .cta-btn:first-child {
+  margin-right: 0;
+  margin-left: 10px;
+}
+
+/* آیکون تیک در بخش درباره‌ما */
+.about .content ul i {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+/*
+ * مهم‌ترین بخش: آیتم منو (عکس گرد + نقطه‌چین + قیمت).
+ * اصل تمپلیت: عکس float:left و متن با margin-left کنارش می‌رود؛
+ * در RTL باید دقیقاً برعکس شود تا عکس سمت راست و متن کنارش (سمت چپ) باشد.
+ */
+.menu .menu-img {
+  float: right;
+}
+.menu .menu-content {
+  margin-left: 0;
+  margin-right: 95px;
+}
+.menu .menu-content::after {
+  left: 0;
+  right: 20px;
+}
+.menu .menu-content a {
+  padding-right: 0;
+  padding-left: 10px;
+}
+.menu .menu-ingredients {
+  margin-left: 0;
+  margin-right: 95px;
+}
+
+/* آیکون کنار متن در بخش رویداد/خدمات (اگر استفاده شود) */
+.events .event-item ul i {
+  padding-right: 0;
+  padding-left: 4px;
+}
+
+/* لوگو و آیکون‌های شبکه اجتماعی در فوتر */
+.footer .footer-about .logo img {
+  margin-right: 0;
+  margin-left: 6px;
+}
+.footer .social-links a {
+  margin-right: 0;
+  margin-left: 10px;
+}
+.footer .footer-links ul i {
+  padding-right: 0;
+  padding-left: 2px;
+}
