@@ -1,0 +1,101 @@
+{% load static %}<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>{% block title %}پلتفرم منوی دیجیتال{% endblock %}</title>
+  {% block meta %}
+  <meta name="description" content="پلتفرم ساخت منوی دیجیتال، وب‌سایت و QR Code اختصاصی برای رستوران‌ها و کافه‌ها.">
+  {% endblock %}
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+
+  <link href="{% static 'restaurantly/vendor/bootstrap/css/bootstrap.rtl.min.css' %}" rel="stylesheet">
+  <link href="{% static 'restaurantly/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'restaurantly/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'restaurantly/css/main.css' %}" rel="stylesheet">
+  <link href="{% static 'restaurantly/css/rtl-overrides.css' %}" rel="stylesheet">
+
+  <style>
+    :root {
+      --default-font: "Vazirmatn", sans-serif;
+      --heading-font: "Vazirmatn", sans-serif;
+      --nav-font: "Vazirmatn", sans-serif;
+    }
+    /* این صفحات به رستوران خاصی تعلق ندارند، پس رنگ اصلی پلتفرم (نه رنگ
+       اختصاصی یک رستوران) استفاده می‌شود. */
+    .platform-hero {
+      background: linear-gradient(135deg, #16232b 0%, #1f3540 100%);
+      color: #fff;
+      padding: 140px 0 90px;
+    }
+    .feature-card {
+      background: var(--surface-color);
+      border-radius: 12px;
+      padding: 32px 24px;
+      height: 100%;
+      text-align: center;
+      border: 1px solid color-mix(in srgb, var(--default-color), transparent 92%);
+    }
+    .feature-card i { font-size: 34px; color: var(--accent-color); margin-bottom: 14px; display: block; }
+  </style>
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header fixed-top">
+    <div class="branding d-flex align-items-center">
+      <div class="container position-relative d-flex align-items-center justify-content-between">
+        <a href="{% url 'platform_home' %}" class="logo d-flex align-items-center me-auto me-xl-0">
+          <h1 class="sitename">منوی دیجیتال</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <li><a href="{% url 'platform_home' %}#features">ویژگی‌ها</a></li>
+            <li><a href="{% url 'platform_home' %}#demo">نمونه کار</a></li>
+            <li><a href="{% url 'login' %}">ورود</a></li>
+          </ul>
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+
+        <a class="btn-book-a-table d-none d-xl-block" href="{% url 'register' %}">ثبت‌نام رایگان</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius:8px;">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer id="footer" class="footer">
+    <div class="container copyright text-center mt-4">
+      <p>© <span>کپی‌رایت</span> <strong class="px-1 sitename">پلتفرم منوی دیجیتال</strong></p>
+      <div class="credits">همه‌ی حقوق محفوظ است</div>
+    </div>
+  </footer>
+
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <script src="{% static 'restaurantly/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'restaurantly/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'restaurantly/js/main.js' %}"></script>
+</body>
+
+</html>
