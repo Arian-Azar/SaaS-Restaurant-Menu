@@ -1,4 +1,5 @@
 {% extends 'public_base.html' %}
+{% load static %}
 
 {% block title %}{{ post.title }} | {{ restaurant.name }}{% endblock %}
 
@@ -8,21 +9,27 @@
 {% endblock %}
 
 {% block content %}
-<div class="menu-wrapper">
-    {% if post.image %}
-        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width:100%;height:220px;object-fit:cover;">
-    {% endif %}
-
-    <div style="padding:20px;">
-        <p style="margin:0 0 14px;">
-            <a href="{% url 'public_menu' restaurant.slug %}" style="color:#b45309;text-decoration:none;font-size:14px;">
-                ← بازگشت به {{ restaurant.name }}
-            </a>
-        </p>
-
-        <p class="meta" style="color:#9ca3af;margin:0 0 4px;font-size:13px;">{{ post.published_at|date:'Y/m/d' }}</p>
-        <h1 style="margin:0 0 14px;font-size:22px;">{{ post.title }}</h1>
-        <div style="line-height:1.9;color:#374151;">{{ post.content|linebreaks }}</div>
-    </div>
+<div class="page-title position-relative" data-aos="fade" style="background-image: url('{% if post.image %}{{ post.image.url }}{% else %}{% static 'restaurantly/img/page-title-bg.webp' %}{% endif %}');">
+  <div class="container position-relative">
+    <h1>{{ post.title }}</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'public_menu' restaurant.slug %}">{{ restaurant.name }}</a></li>
+        <li class="current">وبلاگ</li>
+      </ol>
+    </nav>
+  </div>
 </div>
+
+<section class="section">
+  <div class="container" data-aos="fade-up">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <p class="text-muted" style="font-size:13px;">{{ post.published_at|date:'Y/m/d' }}</p>
+        <div style="line-height:1.9;">{{ post.content|linebreaks }}</div>
+        <a href="{% url 'public_menu' restaurant.slug %}" class="btn-book-a-table" style="display:inline-block;">بازگشت به {{ restaurant.name }}</a>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
