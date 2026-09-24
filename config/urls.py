@@ -19,6 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from apps.core.views import platform_home
 from apps.restaurants.seo import robots_txt_response, sitemap_xml_response
 
 urlpatterns = [
@@ -30,6 +31,11 @@ urlpatterns = [
     # اسلاگ یک رستوران تفسیر کند.
     path('robots.txt', robots_txt_response, name='robots_txt'),
     path('sitemap.xml', sitemap_xml_response, name='sitemap_xml'),
+
+    # صفحه اصلی پلتفرم (نه صفحه‌ی هیچ رستورانی). چون این مسیر خودش دقیقاً
+    # '' است و الگوی catch-all اپ restaurants حداقل یک بخش (اسلاگ) لازم
+    # دارد، هیچ تداخلی با آن ندارد.
+    path('', platform_home, name='platform_home'),
 
     path('accounts/', include('apps.accounts.urls')),
     path('panel/', include('apps.menu.urls', namespace='menu')),
