@@ -1,0 +1,104 @@
+{% extends 'platform_base.html' %}
+{% load static %}
+
+{% block title %}پلتفرم منوی دیجیتال — منوی آنلاین رستوران خودتان را بسازید{% endblock %}
+
+{% block content %}
+
+<section class="platform-hero text-center">
+  <div class="container" data-aos="fade-up">
+    <h1 class="display-5 fw-bold mb-3">منوی دیجیتال رستوران خودتان را در چند دقیقه بسازید</h1>
+    <p class="lead mb-4" style="opacity:.85;max-width:640px;margin-inline:auto;">
+      یک صفحه‌ی اختصاصی، منوی آنلاین، QR Code، گالری، رزرو میز و نظرات مشتری —
+      بدون نیاز به دانش برنامه‌نویسی یا طراحی وب‌سایت.
+    </p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4">شروع رایگان</a>
+      {% if demo_restaurant %}
+      <a href="{% url 'public_menu' demo_restaurant.slug %}" class="btn btn-outline-light btn-lg px-4" target="_blank">مشاهده نمونه</a>
+      {% endif %}
+    </div>
+    {% if restaurants_count %}
+    <p class="mt-4" style="opacity:.7;font-size:14px;">
+      هم‌اکنون {{ restaurants_count }} رستوران روی این پلتفرم فعال هستند.
+    </p>
+    {% endif %}
+  </div>
+</section>
+
+<section id="features" class="section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>ویژگی‌ها</h2>
+    <p>همه چیزی که برای منوی دیجیتال رستورانتان لازم دارید</p>
+  </div>
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-card">
+          <i class="bi bi-qr-code"></i>
+          <h5>QR Code اختصاصی</h5>
+          <p class="mb-0">مشتری با یک اسکن مستقیم به منوی آنلاین شما می‌رسد.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="150">
+        <div class="feature-card">
+          <i class="bi bi-grid-3x3-gap"></i>
+          <h5>پنل مدیریت ساده</h5>
+          <p class="mb-0">دسته‌بندی، محصول، قیمت و تخفیف را خودتان و بدون واسطه به‌روز کنید.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-card">
+          <i class="bi bi-images"></i>
+          <h5>گالری و اسلایدر هیرو</h5>
+          <p class="mb-0">فضای رستوران‌تان را با تصاویر واقعی به نمایش بگذارید.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-card">
+          <i class="bi bi-calendar-check"></i>
+          <h5>رزرو میز آنلاین</h5>
+          <p class="mb-0">درخواست‌های رزرو مستقیم در پنل مدیریت شما ثبت می‌شوند.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="150">
+        <div class="feature-card">
+          <i class="bi bi-chat-quote"></i>
+          <h5>نظرات مشتریان</h5>
+          <p class="mb-0">نظرات واقعی مشتریانتان را نمایش دهید و اعتماد بسازید.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-card">
+          <i class="bi bi-search"></i>
+          <h5>آماده برای گوگل</h5>
+          <p class="mb-0">هر صفحه به‌طور خودکار برای موتورهای جستجو بهینه می‌شود.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if demo_restaurant %}
+<section id="demo" class="section" style="background-color: color-mix(in srgb, var(--background-color) 95%, black 5%);">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>نمونه کار</h2>
+    <p>یک نمونه‌ی واقعی از منوی ساخته‌شده با این پلتفرم را ببینید</p>
+  </div>
+  <div class="container text-center" data-aos="fade-up" data-aos-delay="100">
+    <a href="{% url 'public_menu' demo_restaurant.slug %}" class="btn btn-primary btn-lg" target="_blank">
+      مشاهده‌ی {{ demo_restaurant.name }} ↗
+    </a>
+  </div>
+</section>
+{% endif %}
+
+<section class="section text-center">
+  <div class="container" data-aos="fade-up">
+    <h2 class="mb-3">همین حالا شروع کنید</h2>
+    <p class="mb-4">ثبت‌نام رایگان است و کمتر از پنج دقیقه طول می‌کشد.</p>
+    <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5">ثبت‌نام رستوران</a>
+  </div>
+</section>
+
+{% endblock %}
